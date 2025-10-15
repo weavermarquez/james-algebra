@@ -1,0 +1,10 @@
+#+title: Readme
+
+
+* Iconic Arithmetic
+Based off the work by George Spencer Brown, William Bricken, and Jeffrey James. 
+https://iconicmath.com/
+https://wbricken.com/
+
+
+
