@@ -1,0 +1,474 @@
+
+Archived entries from file /var/home/kwalerie/Documents/org/30-fractal/james-algebra/README.org
+
+
+* Distinction Network
+:PROPERTIES:
+:ARCHIVE_TIME: 2025-10-16 Thu 16:25
+:ARCHIVE_FILE: ~/Documents/org/30-fractal/james-algebra/README.org
+:ARCHIVE_OLPATH: System Design/James Algebra/Thoughts on computational implementation
+:ARCHIVE_CATEGORY: README
+:END:
+#+begin_quote
+7. Distinction Networks
+A distinction network (dnet) is a collection of nodes, or as we have been calling them here,
+containers, and a collection of directional links connecting pairs of nodes. The distinguished
+direction of connectivity could be called either contains or is-contained-by, depending upon our
+choice of perspective. Since a link is an ordered pair, we can consider a network to be a set of
+ordered pairs of nodes.
+Dnets are a postsymbolic notation, a more natural iconic way to visualize containment. Basically
+dnets are directed acyclic graphs with structure sharing. By considering network structure to
+be a pictorial description without labelling the nodes, the presumed infrastructure of sets and
+predicate calculus is not necessary. For dnets, the link between two nodes can be seen as a shared
+boundary, while the nodes are the territories on either side of the boundary. The distinction
+boundary itself defines the difference between contents and context. The boundary provides
+context for its contents. Forms in the same context have the same boundary as their environment,
+however they have no relation to each other. This leads to an important advantage of modeling
+containment by network structures: networks highlight the potential for concurrent
+transformations.
+7.1 Structure
+A form is any sub-network of a given node. All nodes are roots for their contents, although some
+content nodes may have multiple roots due to structure sharing. Acyclic networks do not have
+loops, modeling the idea that two containers cannot mutually contain each other. Since all forms
+are contained the network is connected, the network analog of the concept of closure for string
+expressions. A node with no upper links is a global container, the root of a rooted graph. A node
+with no lower links is an empty container, a leaf of a rooted graph. Forms that do not share a
+common root are entirely independent of one another. In the network notation, downward exiting
+links have the same role as pattern-variables. They can connect to any network structure. An
+open-ended downward link acts like the symbolic x_ indicating lower connectivity to at least one
+node. For algebraic accuracy, every node but leaf nodes should include an exit link.37 A more
+casual notation is used below, to show shapes rather than formal specifications. In general the
+connectivity structure of the network is sufficient to identify a specific network uniquely.
+Conversion of parens to network structure is shown below for the form ((a b)((a)(b))).
+Parens are first extruded downward. Each parens is capped to construct a spatial enclosure, and
+direct nesting of parens is converted into network links. At this stage, a form is represented by a
+
+33
+rooted tree. Structure sharing combines identical labels to build a network representation. The
+final circular display adds directional arrows and improves the appearance.
+Here are some common examples of network structure.
+Figure 7 shows the symbolic properties of containment as structural properties of networks. The
+heavy bar across a link indicates that the link is not permitted. The bar serves the same role as
+negation, but in a visual format. Network constraints can be implemented without an
+infrastructure of sets and logic and numerics, each of which is an alternative language for
+abstracting the physical structure of a dnet. The change in perspective is from symbolic
+representation coupled with transformation by match-and-substitute to dynamic spatial activity
+choreographed by local message passing leading to local link deletion. Communication with direct
+neighbors achieves the same transformational objectives as match-and-substitute for strings, as
+inference for logic, and as union and intersection for sets. The foundations of our formal
+mathematics preserve conceptual and structural perspectives of a pre-computational era, and as
+such have no privileged status to describe inherently formal iconic computational processes. In
+particular, local concurrent message passing coupled with match-and-delete can be described by
+sets of ordered pairs and by conjunctions of relations, but the operations associated with sets and
+logic are not employed.
+containment label empty not content deep
+irreflexive asymmetric acyclic physicality
+Figure 7: Iconic Constraints that Define Containment
+
+34
+root generic double multiple nested
+( )u ((b c d e)a)u (c)b ((x_)b (y_)c)a (((x_)c)b)a
+b
+a
+a
+b
+a
+c
+ba
+a
+a
+b
+a
+a
+b
+c
+cb
+ab
+c
+a
+u
+b c d e
+7.2 Flexibility
+Rooted trees do not have a preferential ordering of their branches. Ordering of content nodes is
+not a concept within the iconic notation, there is no structural information within the collection of
+links to support such a notion. The visual notation of equal orderings below distorts the spatial
+perspective in favor of showing linear permutations to be equal. The iconic display, in contrast, is
+invariant under rotation in three-dimensions.
+In the freedom of three dimensions, spatial transformation can be achieved by a greater diversity
+of methods, including two-dimensional spatial reflection, temporal network traversal, and three-
+dimensional rotation. By permitting the reader to inhabit the three-dimensional space of
+representation, rotation can be expressed equivalently as the movement of the viewpoint of the
+reader. Symbolic notation limits a reader’s viewpoint, so relations such as commutativity must be
+expressed as a structural transformation of the representation. Iconic notation, in contrast,
+incorporates the concept of viewpoint, so that commutativity does not require restructuring the
+representation. Simply looking from a different perspective is sufficient.
+An associative string function is also a temporal sequence of accumulation. In a network, this
+accumulation over time can be represented by nodes that create additional depth in the
+representation.
+Spencer Brown's approach to associativity is similar to his approach to commutativity. From the
+perspective of iconic patterns, grouping the contents of a container (i.e. establishing an arity)
+violates the independence of those contents. Since containment itself is the iconic grouping
+operation, support of binary arity would require the insertion of additional containers, in effect
+the creation of two different types of container. Although depth and breadth are different
+structurally, the network itself unifies these apparently different properties of string
+representations. Conceptually, all nodes can be processed, traversed, and/or viewed at the same
+time. Both commutativity and associativity are implementation details rather than fundamental
+properties.
+
+35
+=
+a
+c
+e
+b
+d
+= =
+c
+e
+a
+d
+b
+e
+d
+a
+c
+b
+e
+d
+a
+c
+b
+7.3 The Asynchronous Arithmetic of Form
+From the perspective of communication, all nodes in a dnet are continuously active and
+responsive. From the perspective of computation, a dnet is a fine-grain massively parallel
+processor.38 Dnet transformations are entirely local and exclusively limited to communication
+between a particular content form (a directly lower node) and the environment that contains it (a
+directly upper node). Messages flow in one direction only. Each node communicates only with its
+direct neighbors. There is no global coordination. That is, distinction networks act like cellular
+automata. In order to send messages, nodes have internal access to their upper and lower links,
+and can assess when there are no links. Messages instruct a neighbor to disconnect from the
+network. In the relational notation, these disconnections are represented as deletion of ordered
+pairs. In iconic notation, they implement a calculus in which network pruning is the primary
+operation.
+Crossing and calling can be expressed as dnets using a disconnection bar to indicate the structural
+changes specified by each rule.
+CALLING CROSSING BOTH CONCURRENTLY
+( ) ( ) = ( ) (( )) = (( ) x_) =
+Although asynchronous message passing is designed for algebraic reduction, it applies in a
+simplified version to Crossing and Calling. As illustrated in Figure 8, both axioms condense into
+one message. All nodes concurrently examine their own connectivity. Nodes that have no lower
+connections send an asynchronous message to their upper connections, instructing each upper
+node to disconnect itself from the network by deleting all of its connections, regardless of
+connectivity. The root node of the network has no uppers to disconnect from. Effectively, the dnet
+implements an algebraic operation, deleting the pattern-variable x_ that may be attached to the
+container of any leaf node. In Figure 8, the example dnet is reduced to a single node in one
+temporal step by three concurrent disconnect messages.
+
+DISCONNECTION RULE
+Condition: lower links = 0
+Action: send upper nodes DISCONNECT
+Condition: receive DISCONNECT
+Action: disconnect all links
+example 〔 (( ))((( ))(( )( ))) 〕=〔 ( ) 〕
+Figure 8: Asynchronous Crossing and Calling
+
+#+end_quote
+
+
+* Computation of Boundary Logics
+:PROPERTIES:
+:ARCHIVE_TIME: 2025-10-16 Thu 16:25
+:ARCHIVE_FILE: ~/Documents/org/30-fractal/james-algebra/README.org
+:ARCHIVE_OLPATH: System Design/James Algebra/Thoughts on computational implementation
+:ARCHIVE_CATEGORY: README
+:END:
+#+begin_quote
+8. Computation
+Axiom systems guide the transformation of formal structure. These axioms are design choices
+about how we want to think. They impose distinctions upon formal thought by constructing
+partitions, by building boundaries that separate some concepts from others. It is the difference
+between the equivalence classes constructed by axioms that makes available different concepts.
+Axioms themselves suppress difference. Equality of form limits conceptual diversity.
+Comparing the desirability of axiom systems requires not only a shared objective, but also a
+familiarity with how transformation is implemented. What makes a system of transformation
+axioms desirable? What motivates our choices to eliminate differences in form, to suppress
+variety? The discipline of mathematics is guided by maximal abstraction, by axioms that permit
+the most to be said with the least. Over a century ago, Poincaré offered this definition:
+“Mathematics is the art of giving the same name to different things.”39 What kind of axioms might
+achieve this goal? In A New Kind of Science Wolfram uses the programming language
+Mathematica to survey many thousands of potential axiom systems, concluding that there is
+nothing particularly fundamental about axiomatic logic.40 Of the thousands of possible logic
+theorems, the ones that we as a culture have focused upon are not differentially interesting, at
+least not from a structural viewpoint.
+One possible minimality metric for identifying the quality of an axiom system might be the total
+number of characters needed to express the set of axioms, but this has the severe disadvantage of
+rewarding tokens that are packed with hidden meaning. Counting the number of axioms is also a
+false measure, because by joining all the axioms by conjunction, we can always reduce the
+multitude to a single axiom that is usually extremely awkward to use. We then immediately apply
+self-transformations to that single axiom to free the more convenient versions as theorems.
+
+37
+The most elegant collection of concepts that underlie the representation of axioms might also be
+seen as desirable. Of course, humankind has yet to come to agreement on which concepts might
+have greater elegance. Historically, fidelity to physical observation served as grounding, however
+abstract logical and numerical systems are believed to be conceptual rather than concrete. There
+are also metamathematical constraints. Axioms should be independent of one another, consistent
+with one another, and complete in the sense that they can be used for what they are intended.
+Finally there is the psychological perspective, axioms should be very easy to understand, both in
+structure and in motive. Axioms should be intuitive. Mathematics has more or less ignored
+learning theory and the human perceptual system while identifying fascinating artifacts within the
+Platonic realm.41 This finesse (or negligence if you choose) is not an option when working with an
+iconic notation.
+Here is a LoF-like perspective. An axiomatic system is preferable when
+—The concepts that underlie the representation are themselves elegant, succinct,
+widely applicable, mutually supportive, and transparently clear.
+— The concepts map directly onto the representation in a sensual manner, so that
+seeing or reading or hearing or touching the representation elicits the concepts.
+— The representation itself includes an extremely simple transformation system
+(i.e. proof theory) that suppresses long proofs while still generating interesting
+forms that stimulate new concepts and perceptions.
+8.1 Pattern-Matching
+Pattern-matching and substitution of equals is the primary algebraic mechanism for
+transformation of form, so we will need to identify just what such a mechanism requires and
+implies. Match-and-substitute has been foundational to mathematics since Leibniz. “Things are
+the same as each other, of which one can be substituted for the other without loss of truth.”42
+The capability to match forms is implicitly assumed in most mathematical systems, but it is far
+from trivial computationally. Substitution is usually hidden in the equal sign and in the cognitive
+deliberations of a supra-computational agent that we might call the Mathematician. From the
+algorithmic perspective, however, we must specify precisely what a pattern-matching engine
+should and can do. We can readily pass off the task of finding equal forms (i.e. using the equal
+sign) to the computer. Computers look for the same data structures in different parts of memory.
+Structure sharing is compiling identical structures into the same memory location. With a
+declarative programming language, we need only to decide upon which axioms (equalities) we
+wish to assert, the computer will take care of all the work to find those patterns and to apply
+substitutions. We do need to provide guidance about the context of symbolic substitutions for
+cases in which
+— a specific transformation matches more than once
+— the same transformation matches different parts of the same subform
+— different transformations match parts of the same subform
+— the result of a transformation again matches an available transformation
+— a transformation might be beneficially applied in two different directions.
+
+38
+Symbolic transformation rules must include both positive and negative conditions for matching.
+Positive conditions specify the structures that must be present, negative conditions specify
+structures that must not be present. In contrast, the iconic description of both rules and forms
+uses empty space (i.e. non-representation) to specify negative conditions. Our final task then is to
+look at the diversity of results a computer might generate to find whatever we may be interested
+in. Often we use the computer to sort and filter its own results.
+8.2 Iconic and Symbolic Calculi
+Figure 9 shows the axioms of LoF in iconic parens notation. Spencer Brown identifies two axioms
+for the arithmetic and two axioms for the algebra.43 His two axioms for the algebra of distinctions
+are historically grounded, raising parallels to Huntington's group-theoretic axioms in 1930s.
+Spencer Brown’s Position and Transposition align with Huntington’s Complement and
+Distribution. The figure also shows an alternative set of three axioms that are particularly
+convenient for computation. These three computational axioms are void-based, they implement
+transformation solely by construction and deletion of irrelevant structure. Spencer Brown’s
+Transposition, in contrast, rearranges structure and depends upon matching pattern variables in
+non-nested locations.
+initials of the arithmetic
+CROSSING (( )) =
+CALLING ( ) ( ) = ( )
+initials of the algebra
+POSITION (a (a)) =
+TRANSPOSITION ((a b)(a c)) = a ((b)(c))
+computational initials
+DOMINION a ( ) = ( )
+INVOLUTION ((a)) = a
+PERVASION a (a b) = a (b)
+Figure 9: The Iconic Transformation Rules of LoF
+In the following displays, the LoF transformation rules are each presented for comparison in five
+different notations from previous sections: parens (introduced in Section 1.2), annotated parens
+(Section 4.1), sets of ordered pairs (Section 5.4), PUT functions (Section 6.4), and distinction
+networks (Section 7.3). As is the case for any equational system, rules can be applied in either
+direction, as construction or as deletion. The principle of void-equivalence suggests that
+structures that can be omitted should be omitted since void-equivalent forms do not contribute to
+necessary structure or to meaning.There is no concept of implication; deduction occurs through
+pattern-matching and substitution.
+
+39
+The ordered pair descriptions are stacked vertically to emphasize both the pairs that change and
+the explicit catalytic pairs that are necessary as contextual triggers but themselves do not change.
+Only the annotated parens form shows the incidental structure x_ within each container. The
+variables in each pattern can be interpreted equally as labels standing in place of a single form or
+as pattern-variables standing in place of any number of forms. The former interpretation
+corresponds to a sequential implementation for which variables are operated upon one-at-a-time.
+The latter pattern-variable interpretation corresponds to a parallel implementation in which all
+forms within a particular container are operated upon concurrently. The pattern-variable
+interpretation leads to a more elegant set of axioms that are presented in Section 9. Finally the
+dnet representation uses the disconnection bar to indicate the available transformation.
+Axioms of the Arithmetic of Distinction
+In each of the five systems of representation the axioms of the LoF arithmetic, Crossing and
+Calling, give permission to reduce forms via deletion to either a mark or to the absence of a mark.
+Axioms of the Algebra
+In Spencer Brown’s axioms for the LoF algebra the container of the innermost replica in Position
+must otherwise be empty. Without this complete matching, Position takes the shape of the
+Pervasion, one of the computational rules below. Position is a special case of Pervasion for which
+the innermost x_ is replaced by ø. The functional form shows that Position is a generalization of
+Crossing. Position strictly enforces the physicality constraint. In a void-based computational
+
+40
+CROSSING
+parens (( )) = distinction network
+annotated (((ø)a ø)b x_)u = (x_)u
+pairs {(U,b),(b,a),(b,ø),(a,ø)}
+= { }
+puts [EE]U = U
+CALLING
+parens ( ) ( ) = ( ) distinction network
+annotated ((ø)a (ø)a x_)u = ((ø)a x_)u
+pairs {(U,a),(U,a),(a,ø),(a,ø)}
+= {(U,a), (a,ø) }
+puts E[EU] = EU
+system, one way to assert a constraint is to make violation of that constraint void-equivalent.
+What began as an intuitive notion that objects cannot be contained by two different containers, is
+violated by a symbolic notation that permits free replication of labels, and is then corrected by
+LoF rules that assert these forms to be void-equivalent.
+Instead of deleting irrelevant structure, Transposition rearranges structure. In all notational
+styles, the descriptive complexity of rearrangement is apparent. Transposition is a theorem of the
+void-based computational axioms of LoF that follow. Many other generalizations of Transposition
+are available. For example there could be multiple forms containing a on the left-hand-side,
+leading to Broad Transposition.44
+BROAD TRANSPOSITION ((a b)(a c)(a d)…) = a ((b)(c)(d)…)
+
+41
+=
+a
+a
+TRANSPOSITION
+parens ((a b)(a c)) = a ((b)(c))
+annotated (((a y_)f(a z_)g ø)h x_)u = (a ((y_)f(z_)g ø)h x_)u
+pairs { (h,f),(h,g),(h,ø),(f,a),(g,a)}
+= {(U,a),(h,f),(h,g),(h,ø) }
+puts [c[aE]][[b[aE]]E] = [[cE][[bE]E]][aU]
+distinction network
+POSITION
+parens (a (a)) = distinction network
+annotated ((a (a ø)b z_)c x_)u = (x_)u
+pairs {(U,c),(c,a),(c,b),(b,a),(b,ø)}
+= { }
+puts [aE][aE] = U a
+Computational Axioms
+Dominion, Involution and Pervasion define a computational basis for the algebra of LoF. These
+three void-based rules simplify forms solely through deletion and construction of structure. In
+Laws of Form, Dominion is named Integration, Involution is Reflexion, and Pervasion is
+Generation. Different names are introduced here to emphasize that this basis is a different ground
+upon which to build the proof theory of the algebra of LoF. Dominion generalizes Calling while
+Involution generalizes Crossing. The computational axioms are therefore tightly connected to the
+LoF arithmetic. Each of the computational rules employs pattern-variables. The explicit form a is
+generalized to an incidental pattern-variable a_ in Dominion and in Involution. Involution
+addresses double boundaries only, not the structure inside them. Pervasion formalizes the
+concept of semipermeable boundaries. It’s pattern-variable a_ is essential, to be matched and
+eliminated.
+
+42
+DOMINION
+parens a ( ) = ( ) distinction network
+annotated ((ø)b a_)u = ((ø)b)u
+pairs {(U,a_),(U,b),(b,ø)}
+= { (U,b),(b,ø)}
+puts a_[EU] = EU
+a
+INVOLUTION
+parens ((a)) = a distinction network
+annotated (((a_)b ø)c x_)u = (x_ a_)u
+pairs {(U,c),(c,ø),(c,b),(b,a_)}
+= { (U,a_)}
+puts [a_b]E = a_ a
+PERVASION
+parens a (a b) = a (b) distinction network
+annotated (a_ (a_ y_)f x_)u = (a_ (y_)f x_)u
+pairs {(U,a_),(U,f),(f,a_)}
+= {(U,a_),(U,f) }
+puts [a_[bE]][a_U] = [bE][a_U]
+a
+There is one remaining refinement to Pervasion. The pervaded replica a_ in the original Shallow
+Pervasion is nested one level deeper than its outer matching pattern. The textual notation has not
+been adapted for transformation that crosses multiple depths. Deep Pervasion extends the depth
+of pattern matching to replicas at any deeper level of nesting. Succinctly, parens boundaries are
+semipermeable to replicas. We’ll introduce a special type of boundary, { }, to represent any depth
+(including zero depth), just like the ellipsis … represents any breadth. The curly brace { }
+extends Pervasion to any depth of nesting. Similarly, the link-ellipsis in the dnet notation indicates
+any depth of network nesting, independent of intervening branches and boundaries. Since
+ordered pairs and PUTs are textual notations, neither accommodates a notation for arbitrary
+depth of nesting. N has been inserted into both of these notations as a default substitute for depth.
+Many of the demonstrations in Laws of Form presume a sequential stepwise approach across depth
+of nesting. Spencer Brown demonstrated Deep Pervasion as a series of incremental steps, each
+step descending one level deeper into a form.45
+a ( b (a c))
+a (a b (a c))
+a (a b ( c))
+a ( b ( c))
+This stepwise limitation is notational rather than conceptual. We can characterize Pervasion directly
+as a deep rule by asserting that all boundaries are semipermeable to forms on the outside. Shallower
+forms pervade all inward depths, including of course no depth.46 A semipermeable boundary is the
+primary structural characteristic that distinguishes the interpretation of parens forms as logic.
+#+end_quote
+
+
+* Single Variable Calculus
+:PROPERTIES:
+:ARCHIVE_TIME: 2025-10-16 Thu 16:25
+:ARCHIVE_FILE: ~/Documents/org/30-fractal/james-algebra/README.org
+:ARCHIVE_OLPATH: System Design/James Algebra/Thoughts on computational implementation
+:ARCHIVE_CATEGORY: README
+:END:
+#+begin_quote
+
+9. Single Variable Calculus
+The LoF computational algebra is a collection of three equations that assert void-equivalence of
+particular structural circumstances. In Section 8 these three rules are stated using variables to
+explicitly identify structure that is incidental to each rule. In a notation that makes incidental
+structure implicit, each rule can be reduced to address one variable only. The one variable calculus
+treats non-participating structure as truly non-participating, even in the notation. If a form is not
+transformed, it need not be recorded. From the iconic perspective, incidental structure is
+background and therefore does not need a label. To manage potential ambiguity, the null token is
+used to indicate a necessary absence of incidental, non-labelled content.
+
+43
+DEEP PERVASION
+parens a {a b} = a {b} distinction network
+annotated (a_ {a_ y_}n x_)u = (a_ {y_}n x_)u
+pairs {(U,a_),(U,N),(N,a_)}
+= {(U,a_),(U,N) }
+puts [a_[bN]][a_U] = [bN][a_U]
+a
+SECTION 8 SECTION 9
+IMPLICIT INCIDENTAL STRUCTURE (x_)a is now ( )a
+EXPLICIT ABSENCE OF STRUCTURE ( )a is now (ø)a
+The computational axioms are shown in Figure 10 in the new single-variable notation. The figure
+includes three notational varieties for each axiom. The first variety is the original parens notation,
+the second variety is the annotated parens notation using the single variable convention of
+showing only necessary absence. The third equation shows this new notation without annotations.47
+CROSSING
+parens ((( ) ) ) = ( )
+annotated ø (((ø)a ø)b )c = ( )c
+explicit ø (((ø) ø) ) = ( )
+CALLING
+parens (( ) ( ) ) = ( ( ) )
+annotated ø (( )a ( )b )c = ( ( )a)c
+explicit ø ((ø) (ø) ) = ( (ø) )
+DOMINION
+parens (( ) A) = (( ) )
+annotated ø ((ø)a )b = ((ø)a ø)b
+explicit ø ((ø) ) = ((ø) ø)
+INVOLUTION
+parens (((A) ) B) = ( A B )
+annotated ø ((( )a ø)b )c = ( )c
+explicit ø ((( ) ø) ) = ( )
+DEEP PERVASION
+parens (A {A B} ) = (A { B} )
+annotated ø (a_ {a_ }b)c = (a_ { }b)c
+explicit ø (a_ {a_ } ) = (a_ { } )
+Figure 10: Axioms of the Single Variable Algebra
+Dominion does not require specific variables. It asserts that when an outer parens contains an
+empty parens all other contents are void-equivalent, leaving a necessary null constant ø.
+Involution addresses only double parens, and also does not require specific variables. It declares
+all double parens to be void-equivalent. Deep Pervasion then is the only rule that requires
+matching a pattern-variable. It asserts that replicas of any form found nested at a deeper level are
+void-equivalent. Here, the form to be matched is identified by the pattern-variable a_.
+
+44
+
+#+end_quote
+
