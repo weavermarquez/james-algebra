@@ -35,6 +35,11 @@ export const wrapSquare = (...forms: FormNode[]): FormNode =>
 
 export const makeUnit = (): FormNode => wrapRound();
 
+export const cloneForm = (node: FormNode): FormNode => ({
+  label: node.label,
+  children: node.children?.map(cloneForm),
+});
+
 export const cloneTreeWithFreshIndices = (form: FormNode): TreeNode => {
   const state = { index: 1 };
   const walk = (node: FormNode): TreeNode => ({
