@@ -1,8 +1,10 @@
 #!/usr/bin/env bun
-import plugin from "bun-plugin-tailwind";
+import tailwindPlugin from "bun-plugin-tailwind";
 import { existsSync } from "fs";
 import { rm } from "fs/promises";
 import path from "path";
+
+import shimReadlinePlugin from "./plugins/shim-readline-sync";
 
 if (process.argv.includes("--help") || process.argv.includes("-h")) {
   console.log(`
@@ -125,7 +127,7 @@ console.log(`📄 Found ${entrypoints.length} HTML ${entrypoints.length === 1 ? 
 const result = await Bun.build({
   entrypoints,
   outdir,
-  plugins: [plugin],
+  plugins: [tailwindPlugin, shimReadlinePlugin],
   minify: true,
   target: "browser",
   sourcemap: "linked",

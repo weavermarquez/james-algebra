@@ -23,7 +23,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "readline-sync": ["./src/shims/readline-sync.ts"]
     },
 
     // Some stricter flags (disabled by default)
