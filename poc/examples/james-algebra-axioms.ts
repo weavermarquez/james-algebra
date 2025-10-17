@@ -191,7 +191,7 @@ const demonstrations: { name: string; form: FormNode }[] = [
 for (const rule of ruleDefinitions) {
   const fromTree = cloneTreeWithFreshIndices(rule.from);
   const toTree = cloneTreeWithFreshIndices(rule.to);
-  printGraphLink(`Rule: ${rule.name}`, [
+  printGraphLink(`Rule ${rule.name}`, [
     { name: "From", tree: fromTree },
     { name: "To", tree: toTree },
   ]);
@@ -209,7 +209,7 @@ for (const demo of demonstrations) {
 
   const afterDisplay = reindexTree(afterTree);
 
-  printGraphLink(`Demo: ${demo.name}`, [
+  printGraphLink(`Demo ${demo.name}`, [
     { name: "Before", tree: beforeDisplay },
     { name: "After", tree: afterDisplay },
   ]);
