@@ -13,7 +13,7 @@ import {
   wrapRound,
   wrapSquare,
   cloneTreeWithFreshIndices,
-} from "@/lib/james-algebra/rewriting";
+} from "@/lib/james-algebra";
 
 const clarityCases = [
   {
