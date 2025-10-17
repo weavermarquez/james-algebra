@@ -1,0 +1,66 @@
+#+title: Trs
+
+* Prolog implementation of the Knuth-Bendix completion procedure
+
+
+Prolog code: trs.pl
+
+Video: 	Term Rewriting
+
+
+As an application of term rewriting, consider for example the completion of the group axioms:
+
+?- Es = [X*(Y*Z)=(X*Y)*Z, e*X=X, i(X)*X=e],
+   functors_order([*,e,i], Order),
+   completion(Es, Order, [], [], Rs),
+   maplist(portray_clause, Rs).
+    
+
+Or shorter, using the interface predicate equations_trs/2 to relate a list of identities to a convergent term rewriting system (TRS):
+
+?- equations_trs([X*(Y*Z)=(X*Y)*Z, e*X=X, i(X)*X=e], Rs),
+   maplist(portray_clause, Rs).
+    
+
+This yields the following convergent TRS:
+
+i(A*B)==>i(B)*i(A).
+A*i(A)==>e.
+i(i(A))==>A.
+A*e==>A.
+A*B*C==>A*(B*C).
+i(A)*A==>e.
+e*A==>A.
+i(A)*(A*B)==>B.
+i(e)==>e.
+A*(i(A)*B)==>B.
+    
+
+We can use this TRS to reduce—for example—the term X*i(X) to its normal form:
+
+?- equations_trs([X*(Y*Z)=(X*Y)*Z, e*X=X, i(X)*X=e], Rs),
+   normal_form(Rs, X*i(X), NF).
+Gs = ...,
+Rs = ...,
+NF = e .
+    
+
+This shows that the left-inverse is also a right-inverse in groups!
+
+To decide equality between any two terms in groups, simply reduce both of them to their respective normal forms, and see whether they are identical. This only takes a finite number of steps, since the TRS is convergent and hence terminating.
+
+Read The Power of Prolog to understand the Prolog language features that are used in the code. In particular, I recommend the following chapters:
+
+    higher-order predicates
+    definite clause grammars
+    declarative integer arithmetic.
+
+
+
+Please write to triska@metalevel.at if you have any questions about this code or any other aspects.
+
+
+Main page
+
+
+
