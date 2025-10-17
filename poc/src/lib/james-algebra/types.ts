@@ -1,31 +1,45 @@
 import { TreeNode } from "tree-term-rewriting/src/tree";
 
+import { FormId, generateFormId } from "./ids";
+
 export type Boundary = "round" | "square" | "angle";
 
 export type FormNode = {
+  id?: FormId;
   label: string;
   children?: FormNode[];
 };
 
-export const forest = (children: FormNode[] = []): FormNode => ({
-  label: "forest",
-  children,
-});
+const ensureId = (node: FormNode): FormNode => {
+  if (!node.id) {
+    node.id = generateFormId();
+  }
+  return node;
+};
 
-export const container = (boundary: Boundary, child: FormNode): FormNode => ({
-  label: `container:${boundary}`,
-  children: [child],
-});
+export const forest = (children: FormNode[] = []): FormNode =>
+  ensureId({
+    label: "forest",
+    children,
+  });
 
-export const atom = (name: string): FormNode => ({
-  label: `atom:${name}`,
-  children: [],
-});
+export const container = (boundary: Boundary, child: FormNode): FormNode =>
+  ensureId({
+    label: `container:${boundary}`,
+    children: [child],
+  });
 
-export const varRef = (name: string): FormNode => ({
-  label: name,
-  children: [],
-});
+export const atom = (name: string): FormNode =>
+  ensureId({
+    label: `atom:${name}`,
+    children: [],
+  });
+
+export const varRef = (name: string): FormNode =>
+  ensureId({
+    label: name,
+    children: [],
+  });
 
 export const wrapRound = (...forms: FormNode[]): FormNode =>
   container("round", forest(forms));
@@ -36,17 +50,20 @@ export const wrapSquare = (...forms: FormNode[]): FormNode =>
 export const makeUnit = (): FormNode => wrapRound();
 
 export const cloneForm = (node: FormNode): FormNode => ({
-  label: node.label,
+  ...node,
   children: node.children?.map(cloneForm),
 });
 
 export const cloneTreeWithFreshIndices = (form: FormNode): TreeNode => {
   const state = { index: 1 };
-  const walk = (node: FormNode): TreeNode => ({
-    index: state.index++,
-    value: node.label,
-    children: (node.children ?? []).map(walk),
-  });
+  const walk = (node: FormNode): TreeNode => {
+    const ensured = ensureId(node);
+    return {
+      index: state.index++,
+      value: ensured.label,
+      children: (ensured.children ?? []).map(walk),
+    };
+  };
   return walk(form);
 };
 
@@ -118,3 +135,5 @@ export const formToReadable = (form: FormNode): unknown => {
   const displayTree = prepareTreeForDisplay(tree);
   return toReadable(displayTree);
 };
+
+export type { FormId };
