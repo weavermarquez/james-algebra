@@ -1,36 +1,39 @@
-import { Dot } from "tree-term-rewriting/src/tree";
-import { makeEulerTree, treeFromEulerTree, TreeNode } from "tree-term-rewriting/src/tree";
+import {
+  Dot,
+  makeEulerTree,
+  TreeNode,
+} from "tree-term-rewriting/src/tree";
 import { Ordering } from "tree-term-rewriting/src/ordering";
-import { applyRules, TermRewriteSystem } from "tree-term-rewriting/src/trs";
+import { TermRewriteSystem } from "tree-term-rewriting/src/trs";
 
-type Boundary = "round" | "square" | "angle";
+export type Boundary = "round" | "square" | "angle";
 
-type FormNode = {
+export type FormNode = {
   label: string;
   children?: FormNode[];
 };
 
-const forest = (children: FormNode[] = []): FormNode => ({
+export const forest = (children: FormNode[] = []): FormNode => ({
   label: "forest",
   children,
 });
 
-const container = (boundary: Boundary, child: FormNode): FormNode => ({
+export const container = (boundary: Boundary, child: FormNode): FormNode => ({
   label: `container:${boundary}`,
   children: [child],
 });
 
-const atom = (name: string): FormNode => ({
+export const atom = (name: string): FormNode => ({
   label: `atom:${name}`,
   children: [],
 });
 
-const varRef = (name: string): FormNode => ({
+export const varRef = (name: string): FormNode => ({
   label: name,
   children: [],
 });
 
-const cloneTreeWithFreshIndices = (form: FormNode): TreeNode => {
+export const cloneTreeWithFreshIndices = (form: FormNode): TreeNode => {
   const state = { index: 1 };
   const walk = (node: FormNode): TreeNode => ({
     index: state.index++,
@@ -40,7 +43,7 @@ const cloneTreeWithFreshIndices = (form: FormNode): TreeNode => {
   return walk(form);
 };
 
-const reindexTree = (node: TreeNode, startIndex = 1): TreeNode => {
+export const reindexTree = (node: TreeNode, startIndex = 1): TreeNode => {
   const state = { index: startIndex };
   const walk = (current: TreeNode): TreeNode => {
     const index = state.index++;
@@ -50,7 +53,7 @@ const reindexTree = (node: TreeNode, startIndex = 1): TreeNode => {
   return walk(node);
 };
 
-const flattenForestNodes = (node: TreeNode): void => {
+export const flattenForestNodes = (node: TreeNode): void => {
   node.children = node.children.flatMap((child) => {
     flattenForestNodes(child);
     if (node.value === "forest" && child.value === "forest") {
@@ -60,7 +63,7 @@ const flattenForestNodes = (node: TreeNode): void => {
   });
 };
 
-const toReadable = (node: TreeNode): unknown => {
+export const toReadable = (node: TreeNode): unknown => {
   if (node.value === "forest") {
     return node.children.map(toReadable);
   }
@@ -88,7 +91,7 @@ const toReadable = (node: TreeNode): unknown => {
   };
 };
 
-class NodeCountOrdering extends Ordering {
+export class NodeCountOrdering extends Ordering {
   private size(node: TreeNode): number {
     return 1 + node.children.reduce((sum, child) => sum + this.size(child), 0);
   }
@@ -98,9 +101,9 @@ class NodeCountOrdering extends Ordering {
   }
 }
 
-const ordering = new NodeCountOrdering();
+export const ordering = new NodeCountOrdering();
 
-const ruleDefinitions = [
+export const ruleDefinitions = [
   {
     name: "clarify_round_square",
     from: container("round", forest([container("square", varRef("$A"))])),
@@ -113,7 +116,7 @@ const ruleDefinitions = [
   },
 ];
 
-const termRewriteSystem: TermRewriteSystem = {
+export const termRewriteSystem: TermRewriteSystem = {
   equations: [],
   rules: ruleDefinitions.map(({ from, to }) => ({
     from: makeEulerTree(cloneTreeWithFreshIndices(from)),
@@ -121,7 +124,7 @@ const termRewriteSystem: TermRewriteSystem = {
   })),
 };
 
-const printGraphLink = (
+export const printGraphLink = (
   title: string,
   trees: { name: string; tree: TreeNode }[],
 ) => {
@@ -137,85 +140,3 @@ const printGraphLink = (
   );
 };
 
-const demonstrations: { name: string; form: FormNode }[] = [
-  {
-    name: "round_square_single",
-    form: forest([
-      container(
-        "round",
-        forest([
-          container(
-            "square",
-            forest([
-              atom("alpha"),
-            ]),
-          ),
-        ]),
-      ),
-    ]),
-  },
-  {
-    name: "round_square_multi",
-    form: forest([
-      container(
-        "round",
-        forest([
-          container(
-            "square",
-            forest([
-              atom("alpha"),
-              atom("beta"),
-              container("round", forest([atom("gamma")])),
-            ]),
-          ),
-        ]),
-      ),
-    ]),
-  },
-  {
-    name: "square_round_single",
-    form: forest([
-      container(
-        "square",
-        forest([
-          container(
-            "round",
-            forest([
-              atom("beta"),
-            ]),
-          ),
-        ]),
-      ),
-    ]),
-  },
-];
-
-for (const rule of ruleDefinitions) {
-  const fromTree = cloneTreeWithFreshIndices(rule.from);
-  const toTree = cloneTreeWithFreshIndices(rule.to);
-  printGraphLink(`Rule ${rule.name}`, [
-    { name: "From", tree: fromTree },
-    { name: "To", tree: toTree },
-  ]);
-}
-
-for (const demo of demonstrations) {
-  const beforeTree = cloneTreeWithFreshIndices(demo.form);
-  const beforeDisplay = reindexTree(beforeTree);
-  flattenForestNodes(beforeDisplay);
-
-  const beforeEuler = makeEulerTree(beforeTree);
-  const rewrittenEuler = applyRules(beforeEuler, termRewriteSystem, ordering, 8);
-  const afterTree = treeFromEulerTree(rewrittenEuler);
-  flattenForestNodes(afterTree);
-
-  const afterDisplay = reindexTree(afterTree);
-
-  printGraphLink(`Demo ${demo.name}`, [
-    { name: "Before", tree: beforeDisplay },
-    { name: "After", tree: afterDisplay },
-  ]);
-
-  console.log(`Before ${demo.name}:`, JSON.stringify(toReadable(beforeDisplay), null, 2));
-  console.log(`After ${demo.name}:`, JSON.stringify(toReadable(afterDisplay), null, 2));
-}
