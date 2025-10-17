@@ -4,7 +4,7 @@ import {
   FormNode,
 } from "@/lib/james-algebra";
 
-import { generateFormId, resetFormIdCounter } from "@/lib/james-algebra/ids";
+import { generateFormId } from "@/lib/james-algebra/ids";
 
 import type { NetworkGraph, NetworkNode, NetworkEdge, NetworkNodeType } from "./types";
 
@@ -36,7 +36,6 @@ type LayoutTree = {
 
 const ensureIds = (node: FormNode): FormNode => {
   const clone = cloneForm(node);
-  resetFormIdCounter();
   const visit = (current: FormNode) => {
     if (!current.id) {
       current.id = generateFormId();
