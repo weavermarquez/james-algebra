@@ -23,7 +23,8 @@ valerie is designing a tech implementation of **james algebra**, which has multi
 - optional: **clipper2-wasm** if you later need robust polygon offsets.
   
 **what to avoid**
-- d3, pixi, konva, p5 all lack solid boolean geometry; fine for drawing only.
+- d3 (alone), pixi, konva, p5 all lack solid boolean geometry; fine for drawing only.
+  - d3 alone is mostly for rendering and is insufficient alone for the geometric animations i want. after finding flatten-js, i found it best supports d3js for its rendering.
 - paper.js too heavyweight unless you want full editor scaffolding.
   
 **morph animation strategy**
@@ -288,7 +289,152 @@ blocks
 A user lands on the index page, which is a simple landing page and a link to the sandbox.
 When they click on the sandbox, are greeted with the empty sandbox page with a simple James Form.
 
+Sandboxes Interaction Model
+For now, let's do a workflow of "select action from rules -> highlight possible application locations -> click to specify location" for users to act with the limited set of axioms / theorems to transform the displayed James Form.
+
 ** 2. Data Model
+The canonical data representation should be a tree. The central (in fact, only) relation in James Algebra is that of /containment/, which is also analogous to /child-of/. This is why I am considering tau-prolog. But pattern matching also works too.
+
+#+begin_src js
+#+end_src
+
+
+I'm wondering if to simplify calculations all nodes should be arity-1 and always hold lists instead of having to juggle list/non-list representations of children.  I'm not super familiar on how this is dealt with in prolog.
+
+
+From [[file:README.org_archive::*Single Variable Calculus][Single Variable Calculus]], which is NOT for James Algebra, but has a very similar formal system, William Bricken specifies that distinction networks are the only satisfactory computational representation of Laws of Form because it is also iconic. James Algebra is also iconic, and therefore we will need to implement this as a distinction network.
+
+Modus Ponens in DNet Prolog
+Attempt 4 A-Lists
+#+begin_src 
+
+#+end_src
+
+Attempt 3 Right, in a graph, nodes and edges are explicitly represented.
+#+begin_src prolog
+node(universe). %always exists
+%% Example of Modus Ponens "(P and (P implies Q)) implies Q"
+
+contains(universe, 1)
+contains(1, 2)
+contains(2, 3)
+contains(3, P)
+contains(2, 4)
+contains(4, 5)
+contains(5, P)
+contains(4, Q)
+
+contains(universe, Q)
+
+
+%% Involution
+involute(Enfolded, Clarified) :-
+    % ((A)) <> A
+    contains(Outer, Inner),
+    % There is *only one* contains(outer, _),
+    contains(Inner, A),
+    % and A is either void or may have connections to other things.
+
+
+#+end_src
+
+
+Attempt 2
+#+begin_src prolog
+
+P = mark(_, Childrens)
+P = mark(_, mark(_,[mark(_,[])]))
+% ((())) -> ()
+
+universe(mark(1,
+              [mark(2,
+                    [mark(3,
+                          [P]),
+                     mark(4,
+                          [Q,
+                           mark(5, [P])])])
+               ,Q]))
+
+%% Involution
+involute(Enfolded, Clarified) :-
+    % holds if Enfolded unifies to ((Clarified))
+    % and there are no additional sibling marks
+    Enfolded = mark(_, [mark(_, [Clarified])])
+    
+
+% Query:
+    How do I 
+#+end_src
+
+
+#+begin_src prolog
+% The root node is always universe().
+% void
+universe()
+
+% ()
+universe(round())
+
+% () ()
+universe([round(), round()])
+
+% []
+universe(square())
+
+% ([])
+universe(round(square()))
+% should reduce to universe()
+
+% Frames are any round elements that have more than one child Form.
+frame(Form) :-
+    Form = round(Children),
+    count(Children) > 1
+
+% inversion
+inversion(Enfolded, Clarified) :-
+    % holds if Wrapped unifies to round(square(Clarified)) or to square(round(Clarified))
+
+arrangement(Collected, Dispersed) :-
+    % holds if
+    % there Collected is a "Frame" form.
+    frame(Collected),
+    
+    % if there exists a square amongst the Collected children
+    Collected = round([List]),
+    select(List, square(SquareElements), List2) % I forget the order
+
+    % and that square has multiple elements
+    % that have a 1-1 correspondence in the squares of the Dispersed frame-forms
+    % though it does not necessarily have to be split up entirely individually
+    
+    % and all the other elements in List2 are a "pivot"
+    
+    % Example of Collected
+    % round([A, B, square([C, D, E])])
+    
+    % Example of Dispersed
+    % [round([A, B, square(C)]), round([A, B, square([D, E])])]
+    
+
+    
+reflection(Created, Canceled) :-
+        % holds if Created is an adjacent, self-annihilating pair.
+        % and Canceled is null....? 
+        % I'm not sure how I'm going to deal with this, actually, because we should be able to create self-annihiliating pairs of forms anywhere that there is empty space.
+        
+        % Example of Created
+        % [A, inverse(A)]
+    
+        % Example of Cancelled
+        % null
+
+% I think we will need another representation of the reflection axiom because
+% null at the moment will need to otherwise be represented everywhere.
+reflection(Created, Canceled) :-
+        
+#+end_src
+
+
 
 
 ** 3. Architecture Diagram
@@ -307,8 +453,6 @@ I'm just familiar with it, is all.
 - James Algebra <> Conventional Algebra translation
 - History
 **** Sandbox 
-The interaction model for each component is primarily mouse-based.
-For now, let's do a workflow of "select action from rules -> highlight possible application locations -> click to specify location" for users to act with the limited set of axioms / theorems to transform the displayed James Form.
 
 - Logic Engine :: James Algebra rule system, state management (undo/redo).
   - =tau-prolog= 
