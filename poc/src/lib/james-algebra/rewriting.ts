@@ -193,7 +193,7 @@ export const buildGraphLink = (
   trees.forEach((entry, offset) => {
     const baseIndex = entry.startIndex ?? offset * 100 + 1;
     const prepared = prepareTreeForDisplay(entry.tree, baseIndex);
-    dot.addTree(entry.name, prepared);
+    dot.addTree(offset.toString(), prepared);
   });
   return `https://dreampuf.github.io/GraphvizOnline/#${encodeURIComponent(dot.text)}`;
 };
