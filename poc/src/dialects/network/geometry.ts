@@ -1,4 +1,4 @@
-import Flatten from "flatten-js";
+import Flatten from "@flatten-js/core";
 
 import type { NetworkGraph, NetworkNode, NetworkEdge } from "./types";
 import { NODE_BASE_SIZE, DIAMOND_SIZE } from "./layout";
