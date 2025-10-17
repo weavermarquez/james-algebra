@@ -289,12 +289,8 @@ blocks
 A user lands on the index page, which is a simple landing page and a link to the sandbox.
 When they click on the sandbox, are greeted with the empty sandbox page with a simple James Form.
 
-Sandboxes Interaction Model
-For now, let's do a workflow of "select action from rules -> highlight possible application locations -> click to specify location" for users to act with the limited set of axioms / theorems to transform the displayed James Form.
-
 ** 2. Data Model
 The canonical data representation should be a tree. The central (in fact, only) relation in James Algebra is that of /containment/, which is also analogous to /child-of/. This is why I am considering tau-prolog. But pattern matching also works too. Maybe for straightforwardness we should just use JS object trees.
-
 
 #+begin_example js
 // void
@@ -398,9 +394,7 @@ From [[file:README.org_archive::*Single Variable Calculus][Single Variable Calcu
 
 
 
-
 ** 3. Architecture Diagram
-
 *** Webserver Architecture
 Client :: The key feature right now. Primary feature is a specific page to serve a live sandbox with sidebar for meta-information. React Router and embeds Sandbox.
 Server :: Minimal for now; only serves routes. React Router Framework.
@@ -433,5 +427,4 @@ I'm just familiar with it, is all.
 **** Supabase
 ** 4. API Sketch
 ** Gameplan
-
 

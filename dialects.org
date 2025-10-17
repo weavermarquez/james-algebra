@@ -1,0 +1,111 @@
+#+title: Dialects
+
+* Sandbox Tech Stack
+- Logic Engine :: James Algebra rule system, state management (undo/redo).
+  - =tree-term-rewriting= for our canonical AST represrentation. Also provides a GraphViz preview.
+- Geometry Kernel :: Handles dialect logic regarding geometry and animation 
+  - =flatten-js= 
+    - point, vector, line, ray, segment, circle, arc, polygon.
+    - Handles spatial queries through Planar Set.
+    - find intersections, check inclusion, calculate distance, apply affine transformation, perform boolean operation.
+    - All classes export to SVG.
+- Renderer :: Renders to screen
+  - =d3js= explicitly supported by =flatten-js=, other graphic libraries would require additional work to bridge
+
+* Network Dialect
+Closely adjacent to the GraphViz preview provided by tree-term-rewriting and the inspiration for our AST. However, this is unique from the AST because there are multiple canonical views of the same forms unrelated to the underlying form.
+
+
+
+
+#+begin_quote
+Network Dialect
+The network dialect (Figure 13-6) is certainly the
+most computationally tractable. It provides the image
+oi nodes/locations/processors with links/paths/wires
+between them. Each link is a contains relation, so that
+the relational structure is explicit. Networks and other
+relational dialects have an additional display requirement
+to specify the direction of nesting, from shallowest to
+deepest. The network version often presumes a gravi¬
+tational metaphor, with deeper nesting shown at lower
+levels. For a network the level of nesting is defined by
+counting the nodes lying between beginning and goal
+(input and output).
+Networks are a well-established modeling tool in compu¬
+tation and in mathematics. The structure of the generic
+times
+frame is clearly visible in a network as a link between
+an upper round node and a lower square node. Multiple
+contents are multiple lower links. Deletion of structure
+is just disconnecting a link. Even the inverter diamond
+fits naturally into the patterns of flow. Networks support
+any number of types of container.
+Unlike the enclosure dialects, networks do not require
+multiple replicas of variables. We can use a single node
+for each variable, and access the variable through mul¬
+tiple links, or pointers. The forms of Arrangement and
+Replication in Figure 13-6 show this feature clearly. The
+experience of driving on roads between different cities
+provides familiarity to the network approach of no rep¬
+licated objects.
+The fluidity of object and reference in networks can be
+expressed as a transformation rule that is unique to this
+(and similar) dialects, structure sharing. In structure
+sharing, nodes in a network that share the same linking
+structure can be joined into a single node with multiple
+links. Entire subnetworks are replaced by links to shared
+319Chapter 13
+-
+®
+structure. Structure sharing is not available in textual
+dialects. The textual representation ot each of the above
+forms is ([A])([A]). Multiple occurrence of the same
+variable in a textual dialect emulates shared structure
+in a network dialect. The absence of structure sharing
+in symbolic mathematics has lead to rampant replication
+of symbols and a presumption that replication is free. As
+noted in Chapter 9, replication is the source of complexity.
+Not only is notation not independent of meaning, it can
+also actively determine meaning. There is little structure
+sharing in the physical world since all physical objects are
+unique.8 If two sheets of paper have the same sentence
+written on them, then the two virtual sentences share the
+same structure. However, the two physical sheets of paper
+do not share the same structure (i.e. they are not replicas)
+although they may share abstract properties such as use,
+color, shape, even content. Representational systems that
+lack structure sharing risk confusing features of the sym¬
+bol ic model with features of the physical circumstance
+being modeled.
+#+end_quote
+
+* Sandbox Interaction Model
+For now, let's do a workflow of specific selection behaviours for specific actions.
+
+General Interaction Model: We are going for something resembling a card game. Action, then target, then decision.
+- User selects action: enter action loop (aka, selection state)
+  - The user selects items, and the UI reflects the current state of the indicated selections.
+  - Terminate this selection state on:
+    - confirmation of the action. Maybe with a button on the sidebar or maybe with a keypress, e.g. space.
+    - cancelation the action. Maybe with a right click.
+    - selection of another card. 
+
+For Clarification:
+- user selects Clarification.
+  - We can freely remove any ([]) or [()] pairs that the location around which the pointer is located is detected... maybe this is easier said than done.
+
+For Enfolding:
+- user selects Enfolding action from rules cards
+- ui responds with highlighting possible locations.
+- user moves pointer to an eligible location.
+- user clicks on location...
+  - Case A: clicks on a specific border.
+    - case A1: user continues to click on /siblings/ of said form.
+      - We have selected a subset of the parents' forest.
+    - case A2: user continues to click on /parent/ of said form. 
+      - We have selected the entire content parent and its forest-child.
+    - case A3: user makes no further selections.
+      - We have selected this specific element.
+  - Case B: clicks on the empty space within a border. This creates an enfolding around void, aka ([]) or [()]. 
+
