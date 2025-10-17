@@ -10,6 +10,7 @@
         "bun-plugin-tailwind": "^0.0.15",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "@tearflake/symbolverse": "git+ssh://github.com/tearflake/symbolverse",
         "lucide-react": "^0.525.0",
         "react": "^19",
         "react-dom": "^19",
@@ -86,6 +87,8 @@
     "@radix-ui/react-visually-hidden": ["@radix-ui/react-visually-hidden@1.2.3", "", { "dependencies": { "@radix-ui/react-primitive": "2.1.3" }, "peerDependencies": { "@types/react": "*", "@types/react-dom": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc", "react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react", "@types/react-dom"] }, "sha512-pzJq12tEaaIhqjbzpCuv/OypJY/BPavOofm+dbab+MHLajy277+1lLm6JFcGgF5eskJ6mquGirhXY2GD/8u8Ug=="],
 
     "@radix-ui/rect": ["@radix-ui/rect@1.1.1", "", {}, "sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw=="],
+
+    "@tearflake/symbolverse": ["@tearflake/symbolverse@git+ssh://github.com/tearflake/symbolverse#5f5c0f9ccfb4aeb724502595c38e79b284912c9e", { "bin": { "symbolverse": "symbolverse.js" } }, "5f5c0f9ccfb4aeb724502595c38e79b284912c9e"],
 
     "@types/bun": ["@types/bun@1.3.0", "", { "dependencies": { "bun-types": "1.3.0" } }, "sha512-+lAGCYjXjip2qY375xX/scJeVRmZ5cY0wyHYyCYxNcdEXrQ4AOe3gACgd4iQ8ksOslJtW4VNxBJ8llUwc3a6AA=="],
 
