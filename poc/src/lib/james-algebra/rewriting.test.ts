@@ -319,11 +319,22 @@ describe("enfoldSelection command", () => {
 
     test(sequence.name, () => {
       let current = cloneForm(sequence.steps[0].form);
+      const stepsForGraph = [sequence.steps[0].form];
+
       commands.forEach((command, index) => {
         current = enfoldSelection(current, command);
+        stepsForGraph.push(current);
         const expectedReadable = sequence.steps[index + 1].expected;
         expect(formToReadable(current)).toEqual(expectedReadable);
       });
+
+      const graphTrees = formsToGraphTrees(
+        stepsForGraph.map((form, index) => ({
+          name: index === 0 ? "original" : `step-${index}`,
+          form,
+        })),
+      );
+      maybeEmitGraphLink(`Enfold command ${sequence.name}`, graphTrees);
     });
   }
 });
