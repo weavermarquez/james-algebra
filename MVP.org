@@ -1,6 +1,46 @@
 #+title: MVP
 
-* Plan
+* Dialects
+   Thanks—this fills in the gaps nicely. With the clarifications in `dialects.org`, here’s the concrete plan to get the network dialect rendering in App.tsx with flatten-js:
+
+   1. **Network projection module**
+      - Build a `network-dialect.ts` in `src/lib/james-algebra/` that walks a `FormNode` tree (reusing the stable ids) and produces a structure describing:
+        - nodes: type (`round`/`square`/`angle`/`atom`), id, depth, siblings order
+        - links: parent id → child id, supporting multi-links for structure sharing
+      - Apply the canonical layout you specified: root at (0,0), each depth step moves downward by a fixed vertical spacing (e.g. `nodeSize * 2`), horizontal offsets based on sibling index so strands stay separate before merging.
+
+   2. **Geometry synthesis with flatten-js**
+      - For each node type, create the appropriate primitive:
+        - circle radius 1cm for `round`
+        - square of side 1cm for `square`
+        - diamond (a square rotated 45°) with side 0.7cm for `angle`
+        - atoms can be small circles or text placeholders; we’ll pick a simple geometry first.
+      - Draw links as straight segments between node center points. Later we can curve them for aesthetics.
+      - Collect everything into a `PlanarSet` so we can run hit-tests and spatial queries when interactivity arrives.
+
+   3. **Structure sharing handling**
+      - Start with one node per `FormId`. If two containers point to the same child id, the projection automatically draws multiple segments into that single node—matching the zipper/braid idea.
+      - We can expose helpers to let the UI optionally “fuse” strands (i.e., adjust layout to overlay links) later, but the base representation already contains the necessary multi-links.
+
+   4. **Angle bracket behavior**
+      - Follow the theorems from `README.org` for link semantics; geometrically, the diamond nodes are placed at the correct depth and tie to their neighbors just like other containers.
+      - Special transformations (reflection cancellation, etc.) will be rules on top of the same network graph.
+
+   5. **Renderer integration**
+      - Add a `NetworkView` component in `App.tsx` that:
+        - takes the current `FormNode`
+        - uses the projection module to get the `PlanarSet`
+        - renders via flatten-js → SVG (either direct `planarSet.svg()` or feeding primitives into D3)
+      - Wrap it with a simple viewport: root at top-center, auto-fit to available width (responsive).
+
+   6. **Data contract for interactivity**
+      - Each node/link in the projection will carry its `FormId`, depth, and bounding box so the UI can map pointer events back to the logical form.
+      - That will plug directly into the selection model you outlined (action → select → confirm).
+
+   I’ll start by implementing the projection + geometry builder, wire it into a React component, and then we can iterate on styling/interactivity. No more unknowns blocking the flatten-js view now.
+
+* Claude's Plan :ARCHIVE:
+** Plan
 
     in progress   Define MVP scope for POC
     pending       Design data model for James Forms
@@ -10,11 +50,11 @@
     pending       Wire up interaction model (select rule → apply)
     pending       Add simple examples and test cases
 
-* Path to POC
+** Path to POC
 
    Based on your README, here's my recommendation for a **minimal proof-of-concept**:
 
-** Phase 1: Core Foundation (Start Here)
+*** Phase 1: Core Foundation (Start Here)
    **Goal**: Get one dialect working end-to-end with one transformation rule
 
    **MVP Scope**:
@@ -29,7 +69,7 @@
    - Gets you through the full stack (Logic → Geometry → Render → Interaction)
    - You can validate the architecture before adding complexity
 
-** Phase 2: Implementation Order
+*** Phase 2: Implementation Order
 
    **1. Data Model First** (Critical!)
    ```typescript
@@ -60,7 +100,7 @@
    - Simplify: Click container → highlight applicable rules → click rule to apply
    - Skip "select rule first" for POC
 
-** Phase 3: What to Build First
+*** Phase 3: What to Build First
 
    **Day 1: Static Rendering**
    ```
@@ -83,7 +123,7 @@
    [ ] Apply rule to selection
    ```
 
-** My Recommendations
+*** My Recommendations
 
    **Simplify Stack for POC**:
    - ❌ tau-prolog → ✅ TypeScript pattern matching
@@ -98,7 +138,7 @@
    - Then add tau-prolog if pattern matching gets complex
    - Then add server/database for sharing
 
-** Questions to Answer First
+*** Questions to Answer First
 
    1. **Form representation**: AST (tree) vs. distinction network (graph)?
       - Recommendation: Start with AST for parens, easier to pattern match
