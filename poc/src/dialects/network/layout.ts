@@ -12,6 +12,7 @@ const NODE_BASE_SIZE = 1; // centimeters (abstract units)
 const DIAMOND_SIZE = 0.7;
 const VERTICAL_GAP = NODE_BASE_SIZE * 2;
 const HORIZONTAL_GAP = NODE_BASE_SIZE * 2;
+const ROOT_NODE_ID = "__root__";
 
 const parseNodeType = (node: FormNode): NetworkNodeType => {
   if (node.label.startsWith("container:")) {
@@ -128,6 +129,19 @@ const collectNodesAndEdges = (
   }
 };
 
+const getPrimaryNodeId = (branch: LayoutTree): FormId | undefined => {
+  if (branch.node) {
+    return branch.node.id as FormId;
+  }
+  for (const child of branch.children) {
+    const result = getPrimaryNodeId(child);
+    if (result) {
+      return result;
+    }
+  }
+  return undefined;
+};
+
 export const buildNetworkGraph = (form: FormNode): NetworkGraph => {
   const normalized = ensureIds(form);
   const tree = buildTree(normalized, 0);
@@ -137,6 +151,31 @@ export const buildNetworkGraph = (form: FormNode): NetworkGraph => {
   const nodes = new Map<FormId, NetworkNode>();
   const edges: NetworkEdge[] = [];
   collectNodesAndEdges(tree, nodes, edges);
+
+  const rootId = ROOT_NODE_ID as FormId;
+  const rootNode: NetworkNode = {
+    id: rootId,
+    type: "root",
+    label: "root",
+    depth: -1,
+    x: tree.x * HORIZONTAL_GAP,
+    y: -VERTICAL_GAP,
+  };
+  nodes.set(rootId, rootNode);
+
+  const rootEdgeKeys = new Set<string>();
+  for (const child of tree.children) {
+    const targetId = getPrimaryNodeId(child);
+    if (!targetId) continue;
+    const edgeKey = `${rootId}->${targetId}`;
+    if (rootEdgeKeys.has(edgeKey)) continue;
+    rootEdgeKeys.add(edgeKey);
+    edges.push({
+      id: `${edgeKey}-${edges.length}`,
+      from: rootId,
+      to: targetId,
+    });
+  }
 
   return {
     nodes: Array.from(nodes.values()),
