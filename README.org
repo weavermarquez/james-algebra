@@ -6,5 +6,409 @@ Based off the work by George Spencer Brown, William Bricken, and Jeffrey James.
 https://iconicmath.com/
 https://wbricken.com/
 
+* For Codex
+** goal
+valerie is designing a tech implementation of **james algebra**, which has multiple visual dialects (1d parens → 2d boxes/maps → 2d-3d paths/rooms → 3d blocks). entity counts are small (tens–hundreds), so performance is irrelevant; clarity, geometry, and morph animation matter most.
+
+** key conclusions
+
+**rendering**
+- pick **one svg-based renderer**: either `react+svg` or `two.js (svg mode)`.
+- skip pixi/konva/p5 unless doing future experiential/3d stuff.
+  
+**geometry kernels**
+
+- **flatten-js**: handle polygons, boxes, networks, merges/splits. pairs neatly with d3/svg.
+- **bezier-js**: handle curved “path” dialect; proper bezier math + handles.
+- optional: **clipper2-wasm** if you later need robust polygon offsets.
+  
+**what to avoid**
+- d3 (alone), pixi, konva, p5 all lack solid boolean geometry; fine for drawing only.
+  - d3 alone is mostly for rendering and is insufficient alone for the geometric animations i want. after finding flatten-js, i found it best supports d3js for its rendering.
+- paper.js too heavyweight unless you want full editor scaffolding.
+  
+**morph animation strategy**
+
+1. normalize path orientation/winding.
+2. resample both shapes to N evenly spaced points (arc-length).
+3. align start points to minimize total distance.
+4. interpolate points (lerp) → rebuild svg path each frame.
+5. for split/merge, manage ghost points / progressive re-sampling.
+
+**architecture**
+
+- **core algebra** (rewrite logic) → **geometry kernel** (flatten/bezier) → **renderer adapter** (svg).
+- one morph/tween module reused across dialects.
+- kernels hidden behind small interface: `union`, `subtract`, `sample`, `closestPoint`, `tween`.
+
+** tl;dr
+
+→ keep a single svg renderer
+→ use **flatten-js** for straight geometry
+→ use **bezier-js** for curved dialects
+→ animate via resampling and point interpolation
+→ reserve konva/pixi/godot for later experiential modes
+
+* System Design
+** James Algebra
+*** Core Concepts
+A form of "iconic" arithmetic, this is mathematics that looks like what it means. There are only shapes, no operators nor operands.
+
+#+begin_quote
+Concepts
+
+void
+
+- Void has no properties. (Nothing is not something.)
+- Form is either not nothing or an illusion.
+- Void-equivalent iorms may vary in structure but not in relevance.
+- Void-equivalent forms are syntactically inert and semantically irrelevant.
+
+Containers
+- Containers represent distinctions.
+- Everything is a container.
+- There is only one relation, contains.
+- Empty containers are units.
+- Containers are both object and process.
+
+Structure
+
+- Forms are patterns of containment.
+- Valid forms can be constructed physically.
+- Forms can be represented in many multi-dimensional notations. Containers do not support sequence.
+- Containers are not limited to a specific capacity (no anty).
+- The contents of any container are mutually independent.
+
+Axioms
+
+- Axioms subdivide existent forms into discrete groups.
+- Axioms do not make existent forms void-equivalent, and vice versa. All canonical forms are unequal.
+
+Equality
+
+- Containers with equal contents are equal.
+- Equals can be substituted for equals.
+- Removing identical outer boundaries maintains equality.
+- Removing equal contents maintains equality.
+- Equality is quantized dynamically by transformation steps.
+- Forms change meaning only when they cross a boundary.
+
+Arithmetic
+
+- To count is to identify, categorize, indicate, fuse, and label.
+- Addition is putting forms into the same container.
+- Multiplication is putting square forms into a round container. Exponential and logarithmic bases are defined by the interpretation. Inverses are represented by the same boundary in different contexts.
+
+#+end_quote
+
+*** Axioms
+**** Arithmetic
+#+begin_example
+existence
+() != void
+
+unit accumulation
+() () != ()
+
+void inversion
+([]) = [()] = void
+
+unit reflection
+<()> () = void
+#+end_example
+
+**** Algebra
+#+begin_example
+inversion (enfold / clarify)
+([A]) = [(A)] = A
+
+arrangement (collect / disperse)
+(A [B C]) = (A [B])(A [C])
+
+reflection (create / cancel)
+A <A> = void
+#+end_example
+
+**** Theorems
+
+#+begin_example
+Frame Theorems
+
+dominion (emit / absorob)
+(A []) = void
+
+indication (unmark / mark)
+([A][o]) = A
+
+replication (replicate / tally)
+([A]][o ...n... o]) = A ...N... A
+
+
+Reflection Theorems
+
+involution (wrap / unwrap)
+<<A>> = A
+
+separation
+<A><B> = <A B>
+
+reaction
+<A <B>> = <A> B
+
+promotion (demote/promote)
+(A  [<B>] ) = <(A  [B] )>
+(A <[<B>]>) = <(A <[B]>)>
+
+#+end_example
+
+*** Thoughts on computational implementation
+The network dialect described below - a D.A.G. with shared structure - is certainly the most tractable. Distinction Networks are closely related as they are for a simpler formal system, but I am including it because it will be useful for you.
+**** Network Dialect
+#+begin_quote
+Network Dialect
+The network dialect (Figure 13-6) is certainly the
+most computationally tractable. It provides the image
+oi nodes/locations/processors with links/paths/wires
+between them. Each link is a contains relation, so that
+the relational structure is explicit. Networks and other
+relational dialects have an additional display requirement
+to specify the direction of nesting, from shallowest to
+deepest. The network version often presumes a gravi¬
+tational metaphor, with deeper nesting shown at lower
+levels. For a network the level of nesting is defined by
+counting the nodes lying between beginning and goal
+(input and output).
+Networks are a well-established modeling tool in compu¬
+tation and in mathematics. The structure of the generic
+frame is clearly visible in a network as a link between
+an upper round node and a lower square node. Multiple
+contents are multiple lower links. Deletion of structure
+is just disconnecting a link. Even the inverter diamond
+fits naturally into the patterns of flow. Networks support
+any number of types of container.
+Unlike the enclosure dialects, networks do not require
+multiple replicas of variables. We can use a single node
+for each variable, and access the variable through mul¬
+tiple links, or pointers. The forms of Arrangement and
+Replication in Figure 13-6 show this feature clearly. The
+experience of driving on roads between different cities
+provides familiarity to the network approach of no rep¬
+licated objects.
+The fluidity of object and reference in networks can be
+expressed as a transformation rule that is unique to this
+(and similar) dialects, structure sharing. In structure
+sharing, nodes in a network that share the same linking
+structure can be joined into a single node with multiple
+links. Entire subnetworks are replaced by links to shared
+319Chapter 13
+-
+®
+structure. Structure sharing is not available in textual
+dialects. The textual representation ot each of the above
+forms is ([A])([A]). Multiple occurrence of the same
+variable in a textual dialect emulates shared structure
+in a network dialect. The absence of structure sharing
+in symbolic mathematics has lead to rampant replication
+of symbols and a presumption that replication is free. As
+noted in Chapter 9, replication is the source of complexity.
+Not only is notation not independent of meaning, it can
+also actively determine meaning. There is little structure
+sharing in the physical world since all physical objects are
+unique.8 If two sheets of paper have the same sentence
+written on them, then the two virtual sentences share the
+same structure. However, the two physical sheets of paper
+do not share the same structure (i.e. they are not replicas)
+although they may share abstract properties such as use,
+color, shape, even content. Representational systems that
+lack structure sharing risk confusing features of the sym¬
+bol ic model with features of the physical circumstance
+being modeled.
+#+end_quote
+
+** Overall System Concept
+We are building an interactive tutor, scratch pad, and calculator for James Algebra.
+James Algebra is a pattern-based formal system with rich variety for visual dialects, from 1d parens, 2d boxes/maps, 2d/experiential paths/rooms, and 3d rooms.
+
+Key features
+- Interactive and animated sandbox system playing with James Algebra in multiple dialects
+- Has features similar to existing programming language sandboxes / interactive playgrounds:
+  - Gallery of examples to play around with
+  - Saving and loading programs
+- Challenges to manipulate forms together to practice calculation
+- James Algebra <> Conventional Algebra translator
+
+#+begin_quote
+A dominant characteristic ot boundary forms is the
+point-of-view of the reader/participant. Forms can be
+read from the outside, objectively, or from the inside, sub¬
+jectively. Subjective reading includes participation within
+the form itself. Linear form, in contrast, lacks an inside,
+forcing the perspective that the reader is outside, in some
+higher dimension. In its desire to remove human bias,
+mathematics has embraced the outside, objective view¬
+point, creating a notation that lacks both participation
+and dynamics. Process must then be exhibited as steps.
+A refinement that appears to have been overlooked is
+that objectivity, seeing things as objects, viewing reality
+from the outside, does not achieve neutrality. Objectivity
+limits our perspective so severely that we bel leve we are
+not only super-human but that we have access to locations
+outside of our universe!
+Objectivity makes us the outermost boundary.
+
+#+end_quote
+
+List of Dialects
+#+begin_example
+1d
+Parens
+
+2d
+enclosures
+buckets
+blocks
+maps
+centered maps
+
+experiential
+paths
+rooms with doors
+
+3d
+blocks
+#+end_example
+
+** Glossary
+- James Algebra
+- James Form, or Form
+- Sandbox
+- Program
+- User
+
+** 1. Core User Flows
+A user lands on the index page, which is a simple landing page and a link to the sandbox.
+When they click on the sandbox, are greeted with the empty sandbox page with a simple James Form.
+
+Sandboxes Interaction Model
+For now, let's do a workflow of "select action from rules -> highlight possible application locations -> click to specify location" for users to act with the limited set of axioms / theorems to transform the displayed James Form.
+
+** 2. Data Model
+The canonical data representation should be a tree. The central (in fact, only) relation in James Algebra is that of /containment/, which is also analogous to /child-of/. This is why I am considering tau-prolog. But pattern matching also works too. Maybe for straightforwardness we should just use JS object trees.
+
+
+#+begin_example js
+// void
+let universe = []
+
+// ()
+let universe = [{boundary: round, children: []}]
+
+// []
+let universe = [{boundary: square, children: []}]
+
+// ([])
+let universe = [{boundary: round, children: [
+  {boundary: square, children: []}
+]}]
+
+// [()]
+let universe = [{boundary: square, children: [
+  {boundary: round, children: []}
+]}]
+
+// Inversion Axiom
+// From any location where there is nothingness you can create something, so this isn't even quite right.
+// You dont need to specify a form which to enfold, you can enfold empty space. If you can find
+// a better approach, be my guest.
+function enfold(form: Form | null): Form {
+// example input: inputForm = childForm | null
+// case a: return {form: round, children: [{boundary: square, children: [childForm]}]}
+// case b: return {form: round, children: [{boundary: square, children: [childForm]}]}
+}
+
+// Both ([]) and [()] should be clarified
+function clarify(form: Form): Form | null {
+// case a: form = {boundary: round, children: [{boundary: square, children: [childForm]}]}
+// case b: form = {boundary: square, children: [{boundary: round, children: [childForm]}]}
+// return childForm
+}
+
+
+// Arrangement Axiom
+function collect(forms: Form[]): Form {
+// N forms, as long as all forms other than the square-children to collect into one frame are shared.
+// forms = [
+// {boundary: round, children: [...frame, {boundary: square, children: [childFormA]}]}
+// {boundary: round, children: [...frame, {boundary: square, children: [childFormB]}]}
+// {boundary: round, children: [...frame, {boundary: square, children: [childFormC, childformD]}]}
+// ]
+// Not all of the forms need to be merged all the time, so maybe we also want a more granular version of collect later.
+// return {boundary: round, children: [...frame, {boundary: square, children: [childFormA, childFormB, childFormC, childformD]}]}
+}
+
+function disperse(form: Form): Forms[]{
+// return {boundary: round, children: [...frame, {boundary: square, children: [childFormA, childFormB, childFormC, childformD]}]}
+// 
+// N forms, as long as all forms other than the square-children to collect into one frame are shared.
+// return [
+// {boundary: round, children: [...frame, {boundary: square, children: [childFormA]}]}
+// {boundary: round, children: [...frame, {boundary: square, children: [childFormB]}]}
+// {boundary: round, children: [...frame, {boundary: square, children: [childFormC, childformD]}]}
+// ]
+}
+
+
+// Reflection Axioms
+function cancel(forms: Form[]): null {
+// Only if the forms annihilate each other
+}
+
+function create(): Form[]{
+// Create a pair of annihilating forms
+// return [
+// {boundary: roundOrSquare, children: [..._]}]}
+// {boundary: angle, {boundary: roundOrSquare, children: [..._]}]}}
+// ]
+}
+#+end_example
+
+I'm wondering if to simplify calculations all nodes should be arity-1 and always hold lists instead of having to juggle list/non-list representations of children.  I'm not super familiar on how this is dealt with in prolog.
+
+From [[file:README.org_archive::*Single Variable Calculus][Single Variable Calculus]], which is NOT for James Algebra, but has a very similar formal system, William Bricken specifies that distinction networks are the only satisfactory computational representation of Laws of Form because it is also iconic. James Algebra is also iconic, and therefore we will need to implement this as a distinction network.
+
+** 3. Architecture Diagram
+
+*** Webserver Architecture
+Client :: The key feature right now. Primary feature is a specific page to serve a live sandbox with sidebar for meta-information. React Router and embeds Sandbox.
+Server :: Minimal for now; only serves routes. React Router Framework.
+Database :: May hold a catalogue of examples, showcases. Likely Supabase.
+
+*** Client
+**** React Router
+I'm just familiar with it, is all.
+
+**** Sandbox Sidebar
+- Dialect switching
+- James Algebra <> Conventional Algebra translation
+- History
+**** Sandbox 
+
+- Logic Engine :: James Algebra rule system, state management (undo/redo).
+  - =tau-prolog= 
+- Geometry Kernel :: Handles geometry and animation logic
+  - =flatten-js= 
+    - point, vector, line, ray, segment, circle, arc, polygon.
+    - Handles spatial queries through Planar Set.
+    - find intersections, check inclusion, calculate distance, apply affine transformation, perform boolean operation.
+    - All classes export to SVG.
+- Renderer :: Renders to screen
+  - =d3js= explicitly supported by =flatten-js=, other graphic libraries would require additional work to bridge
+*** Server
+**** React Router Framework
+**** ORM: Drizzle to interface with Supabase.
+*** Database
+**** Supabase
+** 4. API Sketch
+** Gameplan
 
 

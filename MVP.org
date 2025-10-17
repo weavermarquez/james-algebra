@@ -1,0 +1,122 @@
+#+title: MVP
+
+* Plan
+
+    in progress   Define MVP scope for POC
+    pending       Design data model for James Forms
+    pending       Implement core Logic Engine (James Algebra rules)
+    pending       Build Geometry Kernel wrapper
+    pending       Create basic Renderer with React + SVG
+    pending       Wire up interaction model (select rule → apply)
+    pending       Add simple examples and test cases
+
+* Path to POC
+
+   Based on your README, here's my recommendation for a **minimal proof-of-concept**:
+
+** Phase 1: Core Foundation (Start Here)
+   **Goal**: Get one dialect working end-to-end with one transformation rule
+
+   **MVP Scope**:
+   1. **Single dialect**: Start with **1D parens** (simplest to parse and render)
+   2. **Three computational axioms**: Dominion, Involution, Deep Pervasion
+   3. **One form**: `((a))` → `a` (Involution)
+   4. **No animation yet**: Just instant transformations
+   5. **No server/database**: Pure client-side React app
+
+   **Why this scope?**
+   - Parens are the canonical representation - easiest to debug
+   - Gets you through the full stack (Logic → Geometry → Render → Interaction)
+   - You can validate the architecture before adding complexity
+
+** Phase 2: Implementation Order
+
+   **1. Data Model First** (Critical!)
+   ```typescript
+   // Internal representation - closer to distinction networks
+   type Form = Empty | Mark | Container
+
+   // Or go textual first since you have good parens notation
+   type FormAST = string // "(())" 
+   ```
+
+   **2. Logic Engine** 
+   - **Skip tau-prolog for POC** - it's overkill and adds complexity
+   - Start with simple pattern matching in TypeScript
+   - Just implement the 3 computational axioms as functions
+   - Example: `involution: (form: Form) => Form | null`
+
+   **3. Renderer** (Quick Win)
+   - **React + raw SVG** (not d3, not flatten-js yet)
+   - For parens: just render nested rectangles
+   - Get visual feedback ASAP
+
+   **4. Geometry Kernel**
+   - **Defer flatten-js until you need 2D boxes dialect**
+   - For parens POC, you just need: box sizing, nesting positions
+   - Can be 50 lines of TypeScript
+
+   **5. Interaction**
+   - Simplify: Click container → highlight applicable rules → click rule to apply
+   - Skip "select rule first" for POC
+
+** Phase 3: What to Build First
+
+   **Day 1: Static Rendering**
+   ```
+   [ ] Parse "(())" to AST
+   [ ] Render nested boxes as SVG
+   [ ] Display one form on screen
+   ```
+
+   **Day 2: One Transformation**
+   ```
+   [ ] Implement Involution pattern matcher
+   [ ] Add "Apply Involution" button
+   [ ] Update render on click
+   ```
+
+   **Day 3: Interactive Selection**
+   ```
+   [ ] Click to select sub-form
+   [ ] Highlight where rule can apply
+   [ ] Apply rule to selection
+   ```
+
+** My Recommendations
+
+   **Simplify Stack for POC**:
+   - ❌ tau-prolog → ✅ TypeScript pattern matching
+   - ❌ flatten-js → ✅ Simple box layout math
+   - ❌ d3js → ✅ React + SVG
+   - ❌ React Router → ✅ Single page component
+   - ❌ Supabase → ✅ localStorage for examples
+
+   **After POC Works**:
+   - Then add flatten-js for 2D boxes dialect
+   - Then add morphing animations
+   - Then add tau-prolog if pattern matching gets complex
+   - Then add server/database for sharing
+
+** Questions to Answer First
+
+   1. **Form representation**: AST (tree) vs. distinction network (graph)?
+      - Recommendation: Start with AST for parens, easier to pattern match
+        - A :: Let's go for an AST first, sure.
+
+      
+   2. **Where does state live**: React state, Zustand, Redux?
+      - Recommendation: useState for POC, Zustand if it grows
+        - A :: I have never heard of Zustand before, but useState is certainly adequate.
+
+   3. **Parser**: Hand-written or library?
+      - Recommendation: 20-line recursive descent parser for parens
+        - A :: Sure, but wdym recursive descent parser? I imagine for parens it's a simple matter as displaying HTML wrapped in interactivity..? But maybe that'd make transitioning to other things harder.
+
+   Want me to scaffold the POC structure in the `poc/` directory? I can:
+   1. Set up the data model types
+   2. Create a simple parser for parens notation
+   3. Build the basic React component structure
+   4. Implement one transformation rule
+
+   Or would you prefer to discuss the approach more first?
