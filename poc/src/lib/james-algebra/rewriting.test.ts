@@ -13,8 +13,11 @@ import {
   wrapRound,
   wrapSquare,
   cloneTreeWithFreshIndices,
+  cloneForm,
+  enfoldSelection,
 } from "@/lib/james-algebra";
 
+import type { EnfoldSelection } from "@/lib/james-algebra";
 const clarityCases = [
   {
     name: "round_square_single",
@@ -272,6 +275,26 @@ const enfoldingSequences = [
   },
 ] as const;
 
+const enfoldingCommandMap: Record<(typeof enfoldingSequences)[number]["name"], EnfoldSelection[]> = {
+  void: [
+    { path: [], start: 0, end: 0, boundary: "round" },
+  ],
+  atom_A: [
+    { path: [], start: 0, end: 1, boundary: "square" },
+  ],
+  atom_B: [
+    { path: [], start: 0, end: 1, boundary: "round" },
+  ],
+  partial_units: [
+    { path: [], start: 0, end: 2, boundary: "round" },
+  ],
+  variable_chain: [
+    { path: [], start: 0, end: 1, boundary: "square" },
+    { path: [], start: 0, end: 1, boundary: "round" },
+    { path: [0, 0, 0, 0], start: 1, end: 1, boundary: "round" },
+  ],
+};
+
 describe("enfolding demonstrations", () => {
   for (const sequence of enfoldingSequences) {
     test(sequence.name, () => {
@@ -283,6 +306,35 @@ describe("enfolding demonstrations", () => {
       for (const step of sequence.steps) {
         expect(formToReadable(step.form)).toEqual(step.expected);
       }
+    });
+  }
+});
+
+describe("enfoldSelection command", () => {
+  for (const sequence of enfoldingSequences) {
+    const commands = enfoldingCommandMap[sequence.name];
+    if (!commands) {
+      continue;
+    }
+
+    test(sequence.name, () => {
+      let current = cloneForm(sequence.steps[0].form);
+      const stepsForGraph = [sequence.steps[0].form];
+
+      commands.forEach((command, index) => {
+        current = enfoldSelection(current, command);
+        stepsForGraph.push(current);
+        const expectedReadable = sequence.steps[index + 1].expected;
+        expect(formToReadable(current)).toEqual(expectedReadable);
+      });
+
+      const graphTrees = formsToGraphTrees(
+        stepsForGraph.map((form, index) => ({
+          name: index === 0 ? "original" : `step-${index}`,
+          form,
+        })),
+      );
+      maybeEmitGraphLink(`Enfold command ${sequence.name}`, graphTrees);
     });
   }
 });
