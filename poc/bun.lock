@@ -4,6 +4,7 @@
     "": {
       "name": "bun-react-template",
       "dependencies": {
+        "@flatten-js/core": "^1.6.5",
         "@radix-ui/react-label": "^2.1.7",
         "@radix-ui/react-select": "^2.2.5",
         "@radix-ui/react-slot": "^1.2.3",
@@ -11,13 +12,13 @@
         "bun-plugin-tailwind": "^0.0.15",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
-        "tree-term-rewriting": "git@github.com:RobinKa/tree-term-rewriting.git",
         "lucide-react": "^0.525.0",
         "react": "^19",
         "react-dom": "^19",
         "tailwind-merge": "^3.3.1",
         "tailwindcss": "^4.1.11",
         "tailwindcss-animate": "^1.0.7",
+        "tree-term-rewriting": "git@github.com:RobinKa/tree-term-rewriting.git",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -27,6 +28,10 @@
     },
   },
   "packages": {
+    "@flatten-js/core": ["@flatten-js/core@1.6.5", "", { "dependencies": { "@flatten-js/interval-tree": "^2.0.0" } }, "sha512-bDScJhNqec8LNMRjfP1bGiJUmIQLe+qR91vbrHd1ITRwKZX/ogtI27x8qQwFxcmek+t1t4PYxo9yGmyrsP3JAw=="],
+
+    "@flatten-js/interval-tree": ["@flatten-js/interval-tree@2.0.0", "", { "dependencies": { "tslib": "^2.8.1" } }, "sha512-0RD4bzvnKu/RHxuNvNGXK0JUpiLHXLyyNCKx1HKcygstNbaTdYU18nEHRt4eI681diWHjhFHQGw67M8MZza12g=="],
+
     "@floating-ui/core": ["@floating-ui/core@1.7.3", "", { "dependencies": { "@floating-ui/utils": "^0.2.10" } }, "sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w=="],
 
     "@floating-ui/dom": ["@floating-ui/dom@1.7.4", "", { "dependencies": { "@floating-ui/core": "^1.7.3", "@floating-ui/utils": "^0.2.10" } }, "sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA=="],

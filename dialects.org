@@ -1,0 +1,175 @@
+#+title: Dialects
+
+* Sandbox Tech Stack
+- Logic Engine :: James Algebra rule system, state management (undo/redo).
+  - =tree-term-rewriting= for our canonical AST represrentation. Also provides a GraphViz preview.
+- Geometry Kernel :: Handles dialect logic regarding geometry and animation 
+  - =flatten-js= 
+    - point, vector, line, ray, segment, circle, arc, polygon.
+    - Handles spatial queries through Planar Set.
+    - find intersections, check inclusion, calculate distance, apply affine transformation, perform boolean operation.
+    - All classes export to SVG.
+- Renderer :: Renders to screen
+  - =d3js= explicitly supported by =flatten-js=, other graphic libraries would require additional work to bridge
+
+* Network Dialect
+Closely adjacent to the GraphViz preview provided by tree-term-rewriting and the inspiration for our AST. However, this is unique from the AST because there are multiple canonical views of the same forms unrelated to the underlying form.
+
+** Quote 
+#+begin_quote
+Network Dialect
+The network dialect (Figure 13-6) is certainly the
+most computationally tractable. It provides the image
+oi nodes/locations/processors with links/paths/wires
+between them. Each link is a contains relation, so that
+the relational structure is explicit. Networks and other
+relational dialects have an additional display requirement
+to specify the direction of nesting, from shallowest to
+deepest. The network version often presumes a gravi¬
+tational metaphor, with deeper nesting shown at lower
+levels. For a network the level of nesting is defined by
+counting the nodes lying between beginning and goal
+(input and output).
+Networks are a well-established modeling tool in compu¬
+tation and in mathematics. The structure of the generic
+times
+frame is clearly visible in a network as a link between
+an upper round node and a lower square node. Multiple
+contents are multiple lower links. Deletion of structure
+is just disconnecting a link. Even the inverter diamond
+fits naturally into the patterns of flow. Networks support
+any number of types of container.
+Unlike the enclosure dialects, networks do not require
+multiple replicas of variables. We can use a single node
+for each variable, and access the variable through mul¬
+tiple links, or pointers. The forms of Arrangement and
+Replication in Figure 13-6 show this feature clearly. The
+experience of driving on roads between different cities
+provides familiarity to the network approach of no rep¬
+licated objects.
+The fluidity of object and reference in networks can be
+expressed as a transformation rule that is unique to this
+(and similar) dialects, structure sharing. In structure
+sharing, nodes in a network that share the same linking
+structure can be joined into a single node with multiple
+links. Entire subnetworks are replaced by links to shared
+319Chapter 13
+-
+®
+structure. Structure sharing is not available in textual
+dialects. The textual representation ot each of the above
+forms is ([A])([A]). Multiple occurrence of the same
+variable in a textual dialect emulates shared structure
+in a network dialect. The absence of structure sharing
+in symbolic mathematics has lead to rampant replication
+of symbols and a presumption that replication is free. As
+noted in Chapter 9, replication is the source of complexity.
+Not only is notation not independent of meaning, it can
+also actively determine meaning. There is little structure
+sharing in the physical world since all physical objects are
+unique.8 If two sheets of paper have the same sentence
+written on them, then the two virtual sentences share the
+same structure. However, the two physical sheets of paper
+do not share the same structure (i.e. they are not replicas)
+although they may share abstract properties such as use,
+color, shape, even content. Representational systems that
+lack structure sharing risk confusing features of the sym¬
+bol ic model with features of the physical circumstance
+being modeled.
+#+end_quote
+
+** Clarifications for Codex
+
+   **What I still need from you to implement the flatten‑js view**
+   1. **Canonical layout rules**  
+      - Do we always draw containers top-to-bottom (round above square above contents), or do some boundaries have special placements?
+        - For now, yes. We are assuming the root is always at the top, and each level of nested containment adds a node a set set length below its parent. This visual is reminiscent of Quipu, incan rope math.
+          
+      - How much vertical spacing represents “one level” of nesting? We need either absolute units or a normalization rule so the end result matches your mental picture.
+        - The edges between nodes are somewhere between 1-3x of the node's size, which are represented as geometric circles, squares, or diamonds.
+
+   2. **Node geometry per boundary**  
+      - Should round containers be circles, squares be rectangles, angles be diamonds (as hinted in the text), or is there a different mapping?
+        - Correct: we are representing them as geometric circles, squares, and diamonds.
+      - Default sizes/radii per node type.
+        - Let's say 1cm radius / square side length. Diamond lengths should be a tad smaller, 0.7cm side length.
+
+   3. **Link styling & direction**  
+      - Are links straight vertical lines from parent to child, or do we need elbow paths / bezier curves?
+        - Let's start out with simple lines, not necessarily vertical. Aesthetics are nice, but let's get this working first.
+        
+      - Should we denote direction (shallow → deep) with arrows, color, thickness, etc.?
+        - That is a rendering concern, IMO.
+
+   4. **Structure-sharing policy**  
+      - When the tree has repeated atoms, do we want to collapse them to a single shared network node automatically, or only when explicitly marked? I need the rule so the projection doesn’t invent merges you didn’t intend.
+        - A quick illustration on structure sharing. structure sharing is indicated by multiple lines from parent to child. Imagine the left is the root / parent and the right are deeper layers.
+          #+begin_example
+
+          Step 0: two separate strands.
+          --()--[]--A
+          --()--[]--A
+
+          Step 1: two lines lead form each square into the A.
+          --()--[]--A
+          --()--[]-/
+          
+          Step 2: two lines lead into the square.
+          --()--[]--A
+          --()-/
+          
+          Step 2: two lines lead into the round.
+          ==()--[]--A
+          #+end_example
+          
+        - I am thinking that an interesting metaphor, inspired by the qiupu, is to allow users to merge adjacent strands when structure sharing is available
+          - like a zipper.
+          - like a braid.
+
+            I'm not sure what else to say about that. I figure that interactivity is possibly a rendering concern? Maybe not? But I am thinking that the /scroll wheel/ could be a great way to perform this action. Another approach could be that it is initiated by dragging the deepest shared element on top of the other in order to automatically merge as much as possible.
+
+   5. **Viewport / coordinate system expectations**  
+      - flatten‑js works in whatever coordinate frame we choose. Do we align the root at (0,0) and expand downward? Or do you have target dimensions (e.g. fit to 800×600, leave 40px padding)?
+        - I do not have target dimensions, but mobile native is always nice to have.
+        - I think aligning the root at 0,0 is sensible, and then X can be negative: left; positive: right and Y can be negative: up and positive: down.
+
+   6. **Output contract**  
+      - Do you want the network dialect to return a `PlanarSet`, raw flatten geometries (segments + circles), or precomputed SVG? (flatten-js can emit SVG snippets, but we can also pass the primitives to D3.)
+        - PlanarSet seems most apprsopriate because it can help us perform spatial queries such as . search(box) for range queries and hit(point) for point location tests seems important for preparing for interactivity. 
+
+   7. **Any additional dialect rules beyond the quote**  
+      - For example, the quote talks about inverter diamonds; if those have special geometry or linking behavior I need those specs up front.
+        - Inverter Diamonds are just the shape representation of the angle brackets. They do have somewhat unique linking behaviour, but are fairly simple. Listed in README.
+          
+*** More on Angle Brackets
+I have included the angle bracket theorems in README.org in the Theorems section.
+
+* Sandbox Interaction Model
+For now, let's do a workflow of specific selection behaviours for specific actions.
+
+General Interaction Model: We are going for something resembling a card game. Action, then target, then decision.
+- User selects action: enter action loop (aka, selection state)
+  - The user selects items, and the UI reflects the current state of the indicated selections.
+  - Terminate this selection state on:
+    - confirmation of the action. Maybe with a button on the sidebar or maybe with a keypress, e.g. space.
+    - cancelation the action. Maybe with a right click.
+    - selection of another card. 
+
+For Clarification:
+- user selects Clarification.
+  - We can freely remove any ([]) or [()] pairs that the location around which the pointer is located is detected... maybe this is easier said than done.
+
+For Enfolding:
+- user selects Enfolding action from rules cards
+- ui responds with highlighting possible locations.
+- user moves pointer to an eligible location.
+- user clicks on location...
+  - Case A: clicks on a specific border.
+    - case A1: user continues to click on /siblings/ of said form.
+      - We have selected a subset of the parents' forest.
+    - case A2: user continues to click on /parent/ of said form. 
+      - We have selected the entire content parent and its forest-child.
+    - case A3: user makes no further selections.
+      - We have selected this specific element.
+  - Case B: clicks on the empty space within a border. This creates an enfolding around void, aka ([]) or [()]. 
+
