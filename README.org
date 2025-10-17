@@ -372,9 +372,32 @@ function create(): Form[]{
 }
 #+end_example
 
-I'm wondering if to simplify calculations all nodes should be arity-1 and always hold lists instead of having to juggle list/non-list representations of children.  I'm not super familiar on how this is dealt with in prolog.
+One thing I'm curious about is whether in this example (and vice versa for the other one)
+    from: container("square", [container("round", [varRef("$A")])]),
+
+the child for container("round", [varRef("$A")]), namely [varRef("$A")] should be actually a varRef to an entire forest.
+
+what a “form” is, afaict:
+- forest := list of nodes (possibly empty). empty forest = void.
+- node := round(forest) | square(forest) | angle(forest).
+- unit := round([]).
+- existence: [round([])] != []. i.e. unit ≠ void.
+- unit accumulation: [round([]), round([])] ≠ [round([])]. adjacency is literal concatenation, no idempotence.
+- inversion: round([square(a)]) ↔ a and square([round(a)]) ↔ a, where a is any forest (could be []).
+  - note: additionally, need the ability to create a void inversion from nothing, i.e, allowing this to be placed /into any/ forest, not just /around/ an existing forest.
+- arrangement: round(a ⧺ [square(bs)]) ↔ map b∈bs: round(a ⧺ [square([b])]) as siblings. i.e. duplicate the surrounding context across the square’s children.
+- reflection: a ⧺ [angle(a)] ↔ [] and [angle(a)] ⧺ a ↔ [] (a is any forest; this cancels a chunk next to its angled copy).
+  
+Because, it should be the case that any number of forms surrounded by [()],
+
+e.g. [( () () () [()] )]
+would clarify to -> () () () () [()] by removing the outer border. and in this current situation, what would [varRef("$A")] refer to?
+
 
 From [[file:README.org_archive::*Single Variable Calculus][Single Variable Calculus]], which is NOT for James Algebra, but has a very similar formal system, William Bricken specifies that distinction networks are the only satisfactory computational representation of Laws of Form because it is also iconic. James Algebra is also iconic, and therefore we will need to implement this as a distinction network.
+
+
+
 
 ** 3. Architecture Diagram
 
