@@ -4,3 +4,5 @@ declare module "tau-prolog" {
 }
 
 declare module "tau-prolog/modules/lists" {}
+
+declare const tau_file_system: any;
