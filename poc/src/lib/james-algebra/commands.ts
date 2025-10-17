@@ -1,14 +1,13 @@
-import { Boundary, FormNode, container, forest, cloneForm } from "./types";
+import { Boundary, FormNode, FormId, container, forest, cloneForm } from "./types";
 
 export type ForestPath = number[];
 
 export type EnfoldSelection = {
   path: ForestPath;
-  start: number;
-  end: number;
+  selectedIds: FormId[];
   boundary: Boundary;
-  innerBoundary?: Boundary;
   payload?: FormNode[];
+  insertBeforeId?: FormId | null;
 };
 
 const complementBoundary = (boundary: Boundary): Boundary => {
@@ -35,27 +34,74 @@ const cloneWithEnfold = (
   if (depth === selection.path.length) {
     assertForestNode(node);
     const children = node.children ?? [];
-    const { start, end } = selection;
+    const idToIndex = new Map(
+      children.map((child, index) => {
+        if (!child.id) {
+          throw new Error("Encountered a child node without an id.");
+        }
+        return [child.id, index] as const;
+      }),
+    );
 
-    if (start < 0 || start > children.length) {
-      throw new Error(`Enfold start index ${start} is out of bounds for forest of size ${children.length}`);
+    const orderedIndices = selection.selectedIds
+      .map((id) => {
+        const index = idToIndex.get(id);
+        if (index === undefined) {
+          throw new Error(
+            `Selected node ${id} could not be found within the targeted forest.`,
+          );
+        }
+        return index;
+      })
+      .sort((a, b) => a - b);
+
+    const hasSelection = orderedIndices.length > 0;
+
+    for (let i = 1; i < orderedIndices.length; i += 1) {
+      if (orderedIndices[i] !== orderedIndices[i - 1] + 1) {
+        throw new Error("Selected nodes must form a contiguous span within the forest.");
+      }
     }
-    if (end < start || end > children.length) {
-      throw new Error(`Enfold end index ${end} is out of bounds for forest of size ${children.length}`);
+
+    let start: number;
+    let end: number;
+
+    if (hasSelection) {
+      start = orderedIndices[0];
+      end = orderedIndices[orderedIndices.length - 1] + 1;
+    } else {
+      if (selection.insertBeforeId === undefined) {
+        throw new Error(
+          "insertBeforeId must be provided when no nodes are selected for enfolding.",
+        );
+      }
+
+      if (selection.insertBeforeId === null) {
+        start = children.length;
+      } else {
+        const beforeIndex = idToIndex.get(selection.insertBeforeId);
+        if (beforeIndex === undefined) {
+          throw new Error(
+            `insertBeforeId ${selection.insertBeforeId} could not be found in the target forest.`,
+          );
+        }
+        start = beforeIndex;
+      }
+      end = start;
     }
 
     const before = children.slice(0, start).map(cloneForm);
-    const selected = children.slice(start, end).map(cloneForm);
+    const selectedClones = children.slice(start, end).map(cloneForm);
     const after = children.slice(end).map(cloneForm);
 
-    const contentSource = selection.payload?.map(cloneForm) ?? selected;
+    const contentSource = selection.payload?.map(cloneForm) ?? selectedClones;
 
-    const innerBoundary = selection.innerBoundary ?? complementBoundary(selection.boundary);
+    const innerBoundary = complementBoundary(selection.boundary);
     const innerContainer = container(innerBoundary, forest(contentSource));
     const outerContainer = container(selection.boundary, forest([innerContainer]));
 
     return {
-      label: node.label,
+      ...node,
       children: [...before, outerContainer, ...after],
     };
   }
@@ -67,7 +113,7 @@ const cloneWithEnfold = (
   }
 
   return {
-    label: node.label,
+    ...node,
     children: children.map((child, childIndex) =>
       childIndex === index
         ? cloneWithEnfold(child, selection, depth + 1)
@@ -80,8 +126,5 @@ export const enfoldSelection = (
   form: FormNode,
   selection: EnfoldSelection,
 ): FormNode => {
-  if (selection.path.length === 0 && form.label !== "forest") {
-    throw new Error(`Top-level form must be a forest to enfold, received ${form.label}`);
-  }
   return cloneWithEnfold(form, selection, 0);
 };

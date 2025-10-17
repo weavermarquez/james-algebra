@@ -17,7 +17,38 @@ import {
   enfoldSelection,
 } from "@/lib/james-algebra";
 
-import type { EnfoldSelection } from "@/lib/james-algebra";
+import type { EnfoldSelection, FormNode } from "@/lib/james-algebra";
+const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
+  let current = form;
+  for (const index of path) {
+    const children = current.children ?? [];
+    const next = children[index];
+    if (!next) {
+      throw new Error(`Path ${path.join("/")} is invalid for node ${current.label}`);
+    }
+    current = next;
+  }
+  return current;
+};
+
+const getForestAtPath = (form: FormNode, path: number[]): FormNode => {
+  const node = getNodeAtPath(form, path);
+  if (node.label !== "forest") {
+    throw new Error(`Expected forest at path ${path.join("/")}, received ${node.label}`);
+  }
+  return node;
+};
+
+const getChildIdsAtPath = (form: FormNode, path: number[]): string[] => {
+  const forestNode = getForestAtPath(form, path);
+  return (forestNode.children ?? []).map((child, index) => {
+    if (!child.id) {
+      throw new Error(`Child at index ${index} in forest ${forestNode.label} is missing an id.`);
+    }
+    return child.id;
+  });
+};
+
 const clarityCases = [
   {
     name: "round_square_single",
@@ -275,23 +306,62 @@ const enfoldingSequences = [
   },
 ] as const;
 
-const enfoldingCommandMap: Record<(typeof enfoldingSequences)[number]["name"], EnfoldSelection[]> = {
+const enfoldingCommandBuilders: Record<
+  (typeof enfoldingSequences)[number]["name"],
+  ((form: FormNode) => EnfoldSelection)[]
+> = {
   void: [
-    { path: [], start: 0, end: 0, boundary: "round" },
+    (form) => {
+      getForestAtPath(form, []);
+      return {
+        path: [],
+        selectedIds: [],
+        boundary: "round",
+        insertBeforeId: null,
+      };
+    },
   ],
   atom_A: [
-    { path: [], start: 0, end: 1, boundary: "square" },
+    (form) => ({
+      path: [],
+      selectedIds: getChildIdsAtPath(form, []).slice(0, 1),
+      boundary: "square",
+    }),
   ],
   atom_B: [
-    { path: [], start: 0, end: 1, boundary: "round" },
+    (form) => ({
+      path: [],
+      selectedIds: getChildIdsAtPath(form, []).slice(0, 1),
+      boundary: "round",
+    }),
   ],
   partial_units: [
-    { path: [], start: 0, end: 2, boundary: "round" },
+    (form) => ({
+      path: [],
+      selectedIds: getChildIdsAtPath(form, []).slice(0, 2),
+      boundary: "round",
+    }),
   ],
   variable_chain: [
-    { path: [], start: 0, end: 1, boundary: "square" },
-    { path: [], start: 0, end: 1, boundary: "round" },
-    { path: [0, 0, 0, 0], start: 1, end: 1, boundary: "round" },
+    (form) => ({
+      path: [],
+      selectedIds: getChildIdsAtPath(form, []).slice(0, 1),
+      boundary: "square",
+    }),
+    (form) => ({
+      path: [],
+      selectedIds: getChildIdsAtPath(form, []).slice(0, 1),
+      boundary: "round",
+    }),
+    (form) => {
+      getForestAtPath(form, [0, 0, 0, 0]);
+      return {
+        path: [0, 0, 0, 0],
+        selectedIds: [],
+        boundary: "round",
+        insertBeforeId: null,
+      };
+    },
   ],
 };
 
@@ -312,18 +382,19 @@ describe("enfolding demonstrations", () => {
 
 describe("enfoldSelection command", () => {
   for (const sequence of enfoldingSequences) {
-    const commands = enfoldingCommandMap[sequence.name];
-    if (!commands) {
+    const builders = enfoldingCommandBuilders[sequence.name];
+    if (!builders) {
       continue;
     }
 
     test(sequence.name, () => {
       let current = cloneForm(sequence.steps[0].form);
-      const stepsForGraph = [sequence.steps[0].form];
+      const stepsForGraph: FormNode[] = [cloneForm(sequence.steps[0].form)];
 
-      commands.forEach((command, index) => {
-        current = enfoldSelection(current, command);
-        stepsForGraph.push(current);
+      builders.forEach((buildSelection, index) => {
+        const selection = buildSelection(current);
+        current = enfoldSelection(current, selection);
+        stepsForGraph.push(cloneForm(current));
         const expectedReadable = sequence.steps[index + 1].expected;
         expect(formToReadable(current)).toEqual(expectedReadable);
       });
