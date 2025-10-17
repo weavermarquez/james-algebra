@@ -472,3 +472,142 @@ void-equivalent. Here, the form to be matched is identified by the pattern-varia
 
 #+end_quote
 
+
+* Modus Ponens in DNet Prolog
+:PROPERTIES:
+:ARCHIVE_TIME: 2025-10-16 Thu 21:34
+:ARCHIVE_FILE: ~/Documents/org/30-fractal/james-algebra/README.org
+:ARCHIVE_OLPATH: System Design/2. Data Model
+:ARCHIVE_CATEGORY: README
+:END:
+** Attempt 4 A-Lists
+#+begin_src 
+
+#+end_src
+
+** Attempt 3 Right, in a graph, nodes and edges are explicitly represented.
+#+begin_src prolog
+node(universe). %always exists
+%% Example of Modus Ponens "(P and (P implies Q)) implies Q"
+
+contains(universe, 1)
+contains(1, 2)
+contains(2, 3)
+contains(3, P)
+contains(2, 4)
+contains(4, 5)
+contains(5, P)
+contains(4, Q)
+
+contains(universe, Q)
+
+
+%% Involution
+involute(Enfolded, Clarified) :-
+    % ((A)) <> A
+    contains(Outer, Inner),
+    % There is *only one* contains(outer, _),
+    contains(Inner, A),
+    % and A is either void or may have connections to other things.
+
+
+#+end_src
+
+** Attempt 2
+#+begin_src prolog
+
+P = mark(_, Childrens)
+P = mark(_, mark(_,[mark(_,[])]))
+% ((())) -> ()
+
+universe(mark(1,
+              [mark(2,
+                    [mark(3,
+                          [P]),
+                     mark(4,
+                          [Q,
+                           mark(5, [P])])])
+               ,Q]))
+
+%% Involution
+involute(Enfolded, Clarified) :-
+    % holds if Enfolded unifies to ((Clarified))
+    % and there are no additional sibling marks
+    Enfolded = mark(_, [mark(_, [Clarified])])
+    
+
+% Query:
+    How do I 
+#+end_src
+
+** Attempt 1
+#+begin_src prolog
+% The root node is always universe().
+% void
+universe()
+
+% ()
+universe(round())
+
+% () ()
+universe([round(), round()])
+
+% []
+universe(square())
+
+% ([])
+universe(round(square()))
+% should reduce to universe()
+
+% Frames are any round elements that have more than one child Form.
+frame(Form) :-
+    Form = round(Children),
+    count(Children) > 1
+
+% inversion
+inversion(Enfolded, Clarified) :-
+    % holds if Wrapped unifies to round(square(Clarified)) or to square(round(Clarified))
+
+arrangement(Collected, Dispersed) :-
+    % holds if
+    % there Collected is a "Frame" form.
+    frame(Collected),
+    
+    % if there exists a square amongst the Collected children
+    Collected = round([List]),
+    select(List, square(SquareElements), List2) % I forget the order
+
+    % and that square has multiple elements
+    % that have a 1-1 correspondence in the squares of the Dispersed frame-forms
+    % though it does not necessarily have to be split up entirely individually
+    
+    % and all the other elements in List2 are a "pivot"
+    
+    % Example of Collected
+    % round([A, B, square([C, D, E])])
+    
+    % Example of Dispersed
+    % [round([A, B, square(C)]), round([A, B, square([D, E])])]
+    
+
+    
+reflection(Created, Canceled) :-
+        % holds if Created is an adjacent, self-annihilating pair.
+        % and Canceled is null....? 
+        % I'm not sure how I'm going to deal with this, actually, because we should be able to create self-annihiliating pairs of forms anywhere that there is empty space.
+        
+        % Example of Created
+        % [A, inverse(A)]
+    
+        % Example of Cancelled
+        % null
+
+% I think we will need another representation of the reflection axiom because
+% null at the moment will need to otherwise be represented everywhere.
+reflection(Created, Canceled) :-
+        
+#+end_src
+
+
+
+
