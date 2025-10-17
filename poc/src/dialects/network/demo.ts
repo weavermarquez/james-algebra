@@ -1,17 +1,36 @@
 import {
+  angle,
   atom,
-  container,
   forest,
-  wrapRound,
-  wrapSquare,
-  makeUnit,
+  round,
+  square,
   FormNode,
 } from "@/lib/james-algebra";
 
-const simpleDemo: FormNode = forest([
-  wrapRound(wrapSquare(atom("alpha"))),
-  wrapSquare(wrapRound(atom("beta"))),
-  container("angle", forest([makeUnit(), atom("gamma")])),
-]);
+const sharedTheta = atom("theta");
 
-export const demoForm = simpleDemo;
+const leftStrand = round(
+  square(
+    atom("alpha"),
+    angle(round(), atom("beta")),
+    round(sharedTheta),
+  ),
+);
+
+const middleStrand = square(
+  round(atom("gamma")),
+  angle(sharedTheta),
+  round(atom("delta")),
+);
+
+const rightStrand = angle(
+  round(round()),
+  square(sharedTheta, atom("epsilon")),
+);
+
+export const demoForm: FormNode = forest([
+  leftStrand,
+  round(),
+  middleStrand,
+  rightStrand,
+]);

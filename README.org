@@ -438,10 +438,6 @@ network dialect
 - regarding Shared structure:
   - I'm trying to think of how we're going to help readability. When you gave me a more complex richer form, it was hard to tell which lines went where. But I think that is probably a renderer concern. Maybe the edges can have some transparency, or maybe some sort of shape manipulation similar to how knot diagrams depict over/under.
   - Do you think we're going to have to do force network diagrams / spring dynamics when various nodes are sharing structure? Or maybe that's a concern for later?
-  
-logic
-- Why no factory function for angles? 
-- I feel like we should unify and shorten the factory functions for wrapRound and wrapSquare?
 
 I would like to have a temporary button on screen that steps through the enfolding sequence that is in the test.
 
