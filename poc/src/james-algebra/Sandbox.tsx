@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { applyRule, enumerateMatches, formatPath, isGoalReached } from "./engine";
+import { applyRule, enumerateMatches, isGoalReached } from "./engine";
 import { introductoryLesson } from "./lessons";
 import { cloneForest } from "./structure";
 import { RULES } from "./rules";
@@ -9,6 +9,7 @@ interface HistoryEntry {
   forms: FormForest;
   appliedRuleId?: string;
   matchPath?: FormPath;
+  matchPathLabel?: string;
 }
 
 const boundarySymbols: Record<Form["boundary"], [open: string, close: string]> = {
@@ -30,14 +31,42 @@ function formatForest(forms: FormForest): string {
   return forms.map(formToString).join(" ");
 }
 
+function describePath(forms: FormForest, path: FormPath): string {
+  if (path.length === 0) return "root";
+
+  const segments: string[] = [];
+  let currentLevel: FormForest = forms;
+
+  path.forEach((index, depth) => {
+    const node = currentLevel[index];
+    const labelPrefix = `L${depth}[${index}]`;
+    if (!node) {
+      segments.push(`${labelPrefix} • ?`);
+      currentLevel = [];
+      return;
+    }
+
+    segments.push(`${labelPrefix} • ${node.boundary}`);
+    currentLevel = node.children;
+  });
+
+  return segments.join(" › ");
+}
+
 const lesson = introductoryLesson;
 const lessonRules = RULES.filter(rule => lesson.allowedRuleIds.includes(rule.id));
 
-function historyEntry(forms: FormForest, appliedRuleId?: string, matchPath?: FormPath): HistoryEntry {
+function historyEntry(
+  forms: FormForest,
+  appliedRuleId?: string,
+  matchPath?: FormPath,
+  matchPathLabel?: string,
+): HistoryEntry {
   return {
     forms: cloneForest(forms),
     appliedRuleId,
     matchPath: matchPath ? [...matchPath] : undefined,
+    matchPathLabel,
   };
 }
 
@@ -78,16 +107,25 @@ export function Sandbox() {
     setSelectedRuleId(ruleId);
   }
 
-  function handleApplyMatch(match: RuleMatch) {
+  async function handleApplyMatch(match: RuleMatch) {
     if (!selectedRule) return;
-    const nextForms = applyRule(currentForms, selectedRule, match);
-    const truncatedHistory = history.slice(0, historyIndex + 1);
-    const nextHistory = [
-      ...truncatedHistory,
-      historyEntry(nextForms, selectedRule.id, match.meta.path),
-    ];
-    setHistory(nextHistory);
-    setHistoryIndex(nextHistory.length - 1);
+    try {
+      const nextForms = await applyRule(currentForms, selectedRule, match);
+      const truncatedHistory = history.slice(0, historyIndex + 1);
+      const nextHistory = [
+        ...truncatedHistory,
+        historyEntry(
+          nextForms,
+          selectedRule.id,
+          match.meta.path,
+          describePath(currentForms, match.meta.path),
+        ),
+      ];
+      setHistory(nextHistory);
+      setHistoryIndex(nextHistory.length - 1);
+    } catch (error) {
+      console.error("Failed to apply match", error);
+    }
   }
 
   return (
@@ -174,7 +212,9 @@ export function Sandbox() {
                   className="rounded border border-slate-200 px-3 py-2 text-left text-sm hover:bg-slate-50"
                   onClick={() => handleApplyMatch(match)}
                 >
-                  <span className="block font-medium">{formatPath(match.meta.path)}</span>
+                  <span className="block font-medium">
+                    {describePath(currentForms, match.meta.path)}
+                  </span>
                   {match.meta.description && (
                     <span className="text-xs text-slate-500">{match.meta.description}</span>
                   )}
@@ -197,16 +237,23 @@ export function Sandbox() {
       <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">History</h3>
         <ol className="mt-2 space-y-1 text-sm">
-          {history.map((entry, index) => (
-            <li key={index} className={index === historyIndex ? "font-medium text-slate-900" : "text-slate-600"}>
-              <span className="font-mono">{formatForest(entry.forms)}</span>
-              {entry.appliedRuleId && (
-                <span className="text-xs text-slate-500">
-                  {" "}— {entry.appliedRuleId} at {entry.matchPath ? formatPath(entry.matchPath) : "n/a"}
-                </span>
-              )}
-            </li>
-          ))}
+          {history.map((entry, index) => {
+            const isCurrent = index === historyIndex;
+            const isLatest = index === history.length - 1;
+            const textClass = isCurrent ? "text-slate-900 font-semibold" : "text-slate-600";
+            const highlightClass = isLatest ? "border border-amber-300 bg-amber-50" : "border border-transparent";
+
+            return (
+              <li key={index} className={`rounded px-2 py-1 ${textClass} ${highlightClass}`}>
+                <span className="font-mono">{formatForest(entry.forms)}</span>
+                {entry.appliedRuleId && (
+                  <span className="text-xs text-slate-500">
+                    {" "}— {entry.appliedRuleId} at {entry.matchPathLabel ?? "n/a"}
+                  </span>
+                )}
+              </li>
+            );
+          })}
         </ol>
       </section>
     </main>

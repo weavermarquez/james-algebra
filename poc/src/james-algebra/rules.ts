@@ -1,5 +1,6 @@
 import { round, square } from "./factories";
-import { cloneForm, getFormAtPath, replaceFormAtPath, visitForms } from "./structure";
+import { getFormAtPath, replaceFormAtPath, visitForms } from "./structure";
+import { transformWithProlog } from "./prolog/engine";
 import type { FormForest, FormPath, Rule, RuleMatch, RuleMatchMeta } from "./types";
 
 interface SimpleMatchMeta extends RuleMatchMeta {
@@ -31,9 +32,9 @@ const enfoldRule: Rule<SimpleMatchMeta> = {
     });
     return matches;
   },
-  apply(forms: FormForest, match: RuleMatch<SimpleMatchMeta>) {
+  async apply(forms: FormForest, match: RuleMatch<SimpleMatchMeta>) {
     const target = getFormAtPath(forms, match.meta.path).node;
-    const replacement = round(square(cloneForm(target)));
+    const replacement = await transformWithProlog("enfold", target);
     return replaceFormAtPath(forms, match.meta.path, replacement);
   },
   exampleBefore: [round()],
@@ -60,11 +61,10 @@ const clarifyRule: Rule<SimpleMatchMeta> = {
     });
     return matches;
   },
-  apply(forms: FormForest, match: RuleMatch<SimpleMatchMeta>) {
+  async apply(forms: FormForest, match: RuleMatch<SimpleMatchMeta>) {
     const { node } = getFormAtPath(forms, match.meta.path);
-    const squareChild = node.children[0];
-    const inner = squareChild.children[0];
-    return replaceFormAtPath(forms, match.meta.path, cloneForm(inner));
+    const replacement = await transformWithProlog("clarify", node);
+    return replaceFormAtPath(forms, match.meta.path, replacement);
   },
   exampleBefore: [round(square(round()))],
   exampleAfter: [round()],

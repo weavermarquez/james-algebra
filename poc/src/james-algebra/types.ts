@@ -25,7 +25,7 @@ export interface Rule<M extends RuleMatchMeta = RuleMatchMeta> {
   summary: string;
   description?: string;
   matches: (forms: FormForest) => RuleMatch<M>[];
-  apply: (forms: FormForest, match: RuleMatch<M>) => FormForest;
+  apply: (forms: FormForest, match: RuleMatch<M>) => Promise<FormForest>;
   exampleBefore?: FormForest;
   exampleAfter?: FormForest;
   hints?: string[];

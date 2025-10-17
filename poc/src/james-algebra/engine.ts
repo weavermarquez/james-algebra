@@ -19,11 +19,11 @@ export function enumerateMatches<M extends RuleMatchMeta>(
   return rule.matches(forms);
 }
 
-export function applyRule<M extends RuleMatchMeta>(
+export async function applyRule<M extends RuleMatchMeta>(
   forms: FormForest,
   rule: Rule<M>,
   match: RuleMatch<M>,
-): FormForest {
+): Promise<FormForest> {
   if (match.ruleId !== rule.id) {
     throw new Error(`Rule mismatch: expected ${rule.id}, received ${match.ruleId}`);
   }
