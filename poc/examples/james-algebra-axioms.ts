@@ -40,16 +40,12 @@ const cloneTreeWithFreshIndices = (form: FormNode): TreeNode => {
   return walk(form);
 };
 
-const reindexTree = (node: TreeNode): TreeNode => {
-  const state = { index: 1 };
+const reindexTree = (node: TreeNode, startIndex = 1): TreeNode => {
+  const state = { index: startIndex };
   const walk = (current: TreeNode): TreeNode => {
-    const next: TreeNode = {
-      index: state.index++,
-      value: current.value,
-      children: [],
-    };
-    next.children = current.children.map(walk);
-    return next;
+    const index = state.index++;
+    const children = current.children.map(walk);
+    return { index, value: current.value, children };
   };
   return walk(node);
 };
@@ -125,14 +121,20 @@ const termRewriteSystem: TermRewriteSystem = {
   })),
 };
 
-const printGraphLink = (title: string, trees: { name: string; tree: TreeNode }[]) => {
+const printGraphLink = (
+  title: string,
+  trees: { name: string; tree: TreeNode }[],
+) => {
   const dot = new Dot(title);
   trees.forEach((entry, offset) => {
-    const reindexed = reindexTree(entry.tree);
+    const baseIndex = offset * 100 + 1;
+    const reindexed = reindexTree(entry.tree, baseIndex);
     flattenForestNodes(reindexed);
     dot.addTree(entry.name, reindexed);
   });
-  console.log(`${title}: https://dreampuf.github.io/GraphvizOnline/#${encodeURIComponent(dot.text)}`);
+  console.log(
+    `${title}: https://dreampuf.github.io/GraphvizOnline/#${encodeURIComponent(dot.text)}`,
+  );
 };
 
 const demonstrations: { name: string; form: FormNode }[] = [
