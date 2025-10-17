@@ -41,13 +41,14 @@ export const varRef = (name: string): FormNode =>
     children: [],
   });
 
-export const wrapRound = (...forms: FormNode[]): FormNode =>
+export const round = (...forms: FormNode[]): FormNode =>
   container("round", forest(forms));
 
-export const wrapSquare = (...forms: FormNode[]): FormNode =>
+export const square = (...forms: FormNode[]): FormNode =>
   container("square", forest(forms));
 
-export const makeUnit = (): FormNode => wrapRound();
+export const angle = (...forms: FormNode[]): FormNode =>
+  container("angle", forest(forms));
 
 export const cloneForm = (node: FormNode): FormNode => ({
   ...node,

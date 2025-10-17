@@ -5,13 +5,12 @@ import {
   forest,
   formsToGraphTrees,
   formToReadable,
-  makeUnit,
   maybeEmitGraphLink,
   rewriteFormForDisplay,
   toReadable,
   varRef,
-  wrapRound,
-  wrapSquare,
+  round,
+  square,
   cloneTreeWithFreshIndices,
   cloneForm,
   enfoldSelection,
@@ -24,7 +23,9 @@ const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
     const children = current.children ?? [];
     const next = children[index];
     if (!next) {
-      throw new Error(`Path ${path.join("/")} is invalid for node ${current.label}`);
+      throw new Error(
+        `Path ${path.join("/")} is invalid for node ${current.label}`,
+      );
     }
     current = next;
   }
@@ -34,7 +35,9 @@ const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
 const getForestAtPath = (form: FormNode, path: number[]): FormNode => {
   const node = getNodeAtPath(form, path);
   if (node.label !== "forest") {
-    throw new Error(`Expected forest at path ${path.join("/")}, received ${node.label}`);
+    throw new Error(
+      `Expected forest at path ${path.join("/")}, received ${node.label}`,
+    );
   }
   return node;
 };
@@ -43,7 +46,9 @@ const getChildIdsAtPath = (form: FormNode, path: number[]): string[] => {
   const forestNode = getForestAtPath(form, path);
   return (forestNode.children ?? []).map((child, index) => {
     if (!child.id) {
-      throw new Error(`Child at index ${index} in forest ${forestNode.label} is missing an id.`);
+      throw new Error(
+        `Child at index ${index} in forest ${forestNode.label} is missing an id.`,
+      );
     }
     return child.id;
   });
@@ -52,19 +57,13 @@ const getChildIdsAtPath = (form: FormNode, path: number[]): string[] => {
 const clarityCases = [
   {
     name: "round_square_single",
-    form: forest([wrapRound(wrapSquare(atom("alpha")))]),
+    form: forest([round(square(atom("alpha")))]),
     expected: ["alpha"],
   },
   {
     name: "round_square_multi",
     form: forest([
-      wrapRound(
-        wrapSquare(
-          atom("alpha"),
-          atom("beta"),
-          wrapRound(atom("gamma")),
-        ),
-      ),
+      round(square(atom("alpha"), atom("beta"), round(atom("gamma")))),
     ]),
     expected: [
       "alpha",
@@ -77,7 +76,7 @@ const clarityCases = [
   },
   {
     name: "square_round_single",
-    form: forest([wrapSquare(wrapRound(atom("beta")))]),
+    form: forest([square(round(atom("beta")))]),
     expected: ["beta"],
   },
 ] as const;
@@ -110,7 +109,7 @@ const enfoldingSequences = [
       },
       {
         label: "([])",
-        form: forest([wrapRound(wrapSquare())]),
+        form: forest([round(square())]),
         expected: [
           {
             boundary: "round",
@@ -135,7 +134,7 @@ const enfoldingSequences = [
       },
       {
         label: "[(A)]",
-        form: forest([wrapSquare(wrapRound(atom("A")))]),
+        form: forest([square(round(atom("A")))]),
         expected: [
           {
             boundary: "square",
@@ -160,7 +159,7 @@ const enfoldingSequences = [
       },
       {
         label: "([B])",
-        form: forest([wrapRound(wrapSquare(atom("B")))]),
+        form: forest([round(square(atom("B")))]),
         expected: [
           {
             boundary: "round",
@@ -180,7 +179,7 @@ const enfoldingSequences = [
     steps: [
       {
         label: "()()()",
-        form: forest([makeUnit(), makeUnit(), makeUnit()]),
+        form: forest([round(), round(), round()]),
         expected: [
           { boundary: "round", children: [] },
           { boundary: "round", children: [] },
@@ -189,10 +188,7 @@ const enfoldingSequences = [
       },
       {
         label: "([()()]) ()",
-        form: forest([
-          wrapRound(wrapSquare(makeUnit(), makeUnit())),
-          makeUnit(),
-        ]),
+        form: forest([round(square(round(), round())), round()]),
         expected: [
           {
             boundary: "round",
@@ -221,7 +217,7 @@ const enfoldingSequences = [
       },
       {
         label: "[(A)]",
-        form: forest([wrapSquare(wrapRound(varRef("$A")))]),
+        form: forest([square(round(varRef("$A")))]),
         expected: [
           {
             boundary: "square",
@@ -236,9 +232,7 @@ const enfoldingSequences = [
       },
       {
         label: "([[(A)]])",
-        form: forest([
-          wrapRound(wrapSquare(wrapSquare(wrapRound(varRef("$A"))))),
-        ]),
+        form: forest([round(square(square(round(varRef("$A")))))]),
         expected: [
           {
             boundary: "round",
@@ -264,12 +258,7 @@ const enfoldingSequences = [
       {
         label: "([[(A)]([])])",
         form: forest([
-          wrapRound(
-            wrapSquare(
-              wrapSquare(wrapRound(varRef("$A"))),
-              wrapRound(wrapSquare()),
-            ),
-          ),
+          round(square(square(round(varRef("$A"))), round(square()))),
         ]),
         expected: [
           {
