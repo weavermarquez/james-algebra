@@ -426,21 +426,252 @@ I'm just familiar with it, is all.
 *** Database
 **** Supabase
 ** 4. API Sketch
-** Gameplan
-* Current Feedback Draft
+* Current Gameplan
 
-OH MY GOSH, it took a while for me to recognize what I wasn't just looking at some random logo, but once it hit, holy crap!! it looks so good!! I have wanted this for SO LONG. Thank you!! Let's destroy mathphobia!!
+current situation
+We do not have enough time for new features -- it is only two hours until demo time and so what we're gonna do is instead take examples from the iconic arithmetic book and lay them out like we have the enfolding sequences and then step through that as a learning / teaching experience for our audience who will have no clue what James algebra is or how it corresponds to Conventional algebra.
 
-network dialect
-- I feel like the root forest should be rooted 
-- We need to disambiguate the atoms.
-  - I think we need a little fancy font for the atoms. Can we represent the greek letters with the actual unicode in title style with a nice font? Google fonts is fine for now, though I can go have a look.
-- regarding Shared structure:
-  - I'm trying to think of how we're going to help readability. When you gave me a more complex richer form, it was hard to tell which lines went where. But I think that is probably a renderer concern. Maybe the edges can have some transparency, or maybe some sort of shape manipulation similar to how knot diagrams depict over/under.
-  - Do you think we're going to have to do force network diagrams / spring dynamics when various nodes are sharing structure? Or maybe that's a concern for later?
+so our goal here today is to Add hard-coded sequences and display additional information on the sandbox page that will help clarify what is going on in a given situation or given configuration of the James algebra form
 
-I would like to have a temporary button on screen that steps through the enfolding sequence that is in the test.
+Several features that we need
+- Include a legend which explains how each container maps to enter multiple interpretations of arithmetic values
+  - But we want to focus on the most obvious interpretation
+- We also need to display the conventional algebraic interpretation of the form quite prominently and in a way that is I guess sort of Spatially mapped to the James algebra, but we're not gonna do anything fancy
+  - We're just gonna literally have it hard-coded on the demo page as a way to show how each general form Maps to a algebraic interpretation
 
+I need to persuade people that whatever they are seeing is legitimately an algebraic expression.
+
+** I also need to begin preparing a presentation script.
+The demo is only three minutes, so it will have to be very quick, and we will separate it in halves.
+
+*** First, sort of an introduction into the concept of James algebra and how to read it. 
+
+  
+its purpose and how it fits into the world of existing algebra and mathematics. Also, a mention of the current problem, which is that one-third of American adults do not understand fractions and this is not only due to political or economic constraints, but also due to the crisis in confidence of visual proof from the last 200 years.
+
+
+**** Quotes from the book I think are relevant
+
+#+begin_quote
+The great success of the entirely symbolic approach, fol¬
+lowed closely by the rise of the use of streams of ones
+and zeros in digital computers, has led to the expression
+of mathematics almost exclusively in symbolic string
+languages. Unfortunately, in the rush to make math
+8symbolic, the early twentieth century founders seem to
+have forgotten that people care about understanding and
+using math, not about an esoteric collection of structural
+rules that cast common arithmetic into conformity with
+a maze of symbolic concepts delineated by group theory
+built on top of set theory built on top of predicate logic.
+...despite the obvious importance of visual images
+in human cognitive activities, visual representation
+remains a second-class citizen in both the theory
+and practice of mathematics.9
+
+-----
+
+
+A premiere example of a physically dysfunctional sym¬
+bolic concept is the associative law of addition.
+(a + b) + c = a + (b + c)
+The parentheses used to assert this law create visual
+interference that undermines the meaning of addition,
+that of putting together. Putting things together two-
+at-a-time is not a property of addition. The associative
+law specifies a method to achieve addition, one that is
+not particularly efficient. The sequential two-at-a-time
+strategy might be because there are two sides to a tex¬
+tual plus sign; it might be because addition tables are
+constructed in planar space to add only two numbers at
+a time; it might be because relations are usually binary;
+it might be because group theory incorporates right- and
+left-side rules; or it might be a hangover from counting
+by adding one at a time. But here’s what we can learn
+from children. To add many things, put them together. It
+doesn’t matter how.
+
+-----
+
+
+Symbolic math is a big part ol the problem ol math educa¬
+tion; another big part is our cultural belie! that all people
+should learn the details ol an esoteric discipline at the cost
+of their own sell-confidence. We may find that symbolic
+abstraction is a weakness as well as a strength. When it
+comes to problem solving, we might find that symbolic
+arithmetic is an antiquated tool. We might find that iconic
+arithmetic provides greater elegance, simplicity, ground¬
+edness, and hopefully ease of learning.
+
+-----
+
+Our senses and our bodies are the interface between
+manifest and conceptual. Distinction is the ground of
+perception. When there is no distinction between inside
+and outside, we do not perceive a difference. The interface
+between our physical and our cognitive selves is a bound¬
+ary that transacts only differences. The physicality of our
+body defines an obvious container of our self. Boundary
+math carries th is physicality, via iconic representation,
+directly into the core of mathematical thinking.
+
+-----
+
+
+ It is time to reclaim mathematics as a human activity, to tame the creature we have unleashed. Humane math aligns with how our minds are known to work, with how the patterns of communication between people work, and with how physical existence embodies our knowledge. Boundary math is both humane and rigorous, the two objectives are not incompatible. The result is a much sim¬ pler iconic arithmetic that reflects how numbers evolved in human cognition prior to our recent truly exotic exper¬ iment with purely symbolic mathematical form. 
+#+end_quote
+
+*** And secondly, going through basic equations and practicing the evaluation of it.
+
+
+This will require both the introduction and clarification of James' algebra as opposed to unit-ensemble arithmetic, which is the way that humans have historically performed math. Instead, I need to compare this to the algebraic equation manipulations, the structure manipulations that we are performing. Unlike the abacus, which assists with calculation of how many, James' algebra and its representations assist with the calculation and transformation of patterns in how to represent or what is the meaning.
+
+Actually, no, it might be best to just jump into it straight in.
+
+And we definitely need to prioritize including the sequence examples.
+
+**** A bunch of examples.
+
+
+***** Sequences
+
+fig 11-4 p. 278
+#+begin_quote
+4 + 2 :: oooo oo
+ 6 :: oooooo
+
+
+
+4 - 2 :: oooo <oo>
+2 :: oo
+
+
+4 * 2 ::
+([oooo][oo])
+([oooo][o]) ([oooo][o])
+([oooo]) ([oooo])
+oooo oooo
+::
+8
+ 
+
+4 / 2 ::
+([oooo]<[oo]>)
+([oo]<[oo]>) ([oo]<[oo]>)
+( ) ( ) ::
+2
+ 
+
+4 ^ 2 ::
+(([[oooo]][oo]))
+(([[oooo]][o]) ([[oooo]][o]))
+([oooo] [o]) ([oooo] [o]) ([oooo] [o]) ([oooo] [o])
+([oooo] ) ([oooo] ) ([oooo] ) ([oooo] )
+oooo oooo oooo oooo
+:: 16
+
+sqrt(4) = 4^(1/2) ::
+
+(( [[ oo oo ]] <[oo]>))
+(( [[ ([oo][o]) ([oo] [o]) ]] <[oo]>))
+
+(( [[ ([oo][oo]) ]] <[oo]>))
+
+(( [[oo][oo]] <[oo]>))
+
+(([([[oo]][oo])]<[oo]>))
+
+(( [[oo]] [oo] <[oo]>))
+
+(( [[oo]] ))
+
+oo 
+:: 2
+#+end_quote
+
+
+
+***** Some expressions
+#+begin_quote
+fig. 11-1 263
+expression :: james form
+
+In this, we use numerals as shorthand. 
+
+- 0 :: 
+- 3 :: ooo
+- -3 :: <3>
+- 1/3 :: (<[3]>)
+- 3/4 :: ([3][4])
+
+
+- 2 3/4 :: 2 ([3]<[4]>)
+- 3^2 * 5 :: ([5] ([[3]][2]))
+
+explicit base 2
+- 1101 :: ([2 o][2][2]) o
+implicit base 2
+- 1101 :: (((o) o)) o
+
+irrational
+- sqrt(3) :: (([[3]]<[2]>))
+- e, transcendental base-e :: (o)
+
+  
+imaginary and non-numeric forms
+- J, the James imaginary log(-1) :: [<o>]
+- i, imaginary sqrt(1) :: (([J]<[2]>))
+
+- pi, transendental :: ([J]([J]<[2]>))
+
+- negative infinity :: []
+- positive infinity :: <[]>
+#+end_quote
+
+
+***** More Expressions
+#+begin_quote
+expression :: james form
+Inverse
+- A :: A
+- -A ::: <A>
+- 1 / A :: (<[A]>)
+
+Arithmetic
+- A + B :: A B
+- A - B :: A <B>
+- A * B :: ([A][B])
+- A / B :: ([A]<[B]>)
+
+Base
+- B^A :: (([[B]])[A])
+- B^(-A) :: (([[B]])[<A>])
+- B ^ (1/A) :: (([[B]]<[A]>))
+- log_b (A) :: (<[[B]]>[[A]])
+
+Embedded Base
+- # :: (o)
+- #^A :: (A)
+- log_# (A) :: [A]
+
+#+end_quote
+
+
+
+
+This might be a lot, actually. I think I can maybe include some screenshots of unit ensemble arithmetic, but I'm not sure.
+
+
+** Other Draft Thoughts
+
+I do feel like it is a little ironic for Void to be explicitly represented with the root node, so I'm wondering if that should maybe be represented by something more reminiscent of a blank canvas? I think maybe going with the qiupu motif.
+
+Demo Priorities 
+Priority feature:
+- Display the conventional algebraic interpretation of the form prominently.
+- I need a *legend*
+  - Explain how each container maps to multiple interpretations of arithmetic values in the most obvious way.
 
 
 
