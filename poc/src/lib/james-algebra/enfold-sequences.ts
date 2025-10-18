@@ -40,7 +40,9 @@ const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
     const children = current.children ?? [];
     const next = children[index];
     if (!next) {
-      throw new Error(`Path ${path.join("/")} is invalid for node ${current.label}`);
+      throw new Error(
+        `Path ${path.join("/")} is invalid for node ${current.label}`,
+      );
     }
     current = next;
   }
@@ -50,7 +52,9 @@ const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
 const getForestAtPath = (form: FormNode, path: number[]): FormNode => {
   const node = getNodeAtPath(form, path);
   if (node.label !== "forest") {
-    throw new Error(`Expected forest at path ${path.join("/")}, received ${node.label}`);
+    throw new Error(
+      `Expected forest at path ${path.join("/")}, received ${node.label}`,
+    );
   }
   return node;
 };
@@ -76,16 +80,13 @@ export const ENFOLDING_SEQUENCES = [
     steps: [
       {
         label: "Keep 4 and 2 in separate piles",
-        form: forest([square(...makeUnits(4)), ...makeUnits(2)]),
-        expected: [
-          expectedSquareContainer(expectedUnits(4)),
-          ...expectedUnits(2),
-        ],
+        form: forest([...makeUnits(4), ...makeUnits(2)]),
+        expected: expectedUnits(6),
       },
       {
         label: "Collect everything into one container",
-        form: forest([square(...makeUnits(6))]),
-        expected: [expectedSquareContainer(expectedUnits(6))],
+        form: forest(makeUnits(6)),
+        expected: expectedUnits(6),
       },
     ],
   },
@@ -118,9 +119,7 @@ export const ENFOLDING_SEQUENCES = [
     steps: [
       {
         label: "Pack factors into one frame",
-        form: forest([
-          round(square(...makeUnits(4)), square(...makeUnits(2))),
-        ]),
+        form: forest([round(square(...makeUnits(4)), square(...makeUnits(2)))]),
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(4)),
@@ -152,12 +151,8 @@ export const ENFOLDING_SEQUENCES = [
           round(square(...makeUnits(4))),
         ]),
         expected: [
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
         ],
       },
       {
@@ -181,9 +176,7 @@ export const ENFOLDING_SEQUENCES = [
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(4)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
         ],
       },
@@ -196,15 +189,11 @@ export const ENFOLDING_SEQUENCES = [
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
         ],
       },
@@ -224,10 +213,7 @@ export const ENFOLDING_SEQUENCES = [
       {
         label: "Bind the base to its exponent",
         form: forest([
-          round(
-            square(square(...makeUnits(4))),
-            square(...makeUnits(2)),
-          ),
+          round(square(square(...makeUnits(4))), square(...makeUnits(2))),
         ]),
         expected: [
           expectedRoundContainer([
@@ -241,14 +227,8 @@ export const ENFOLDING_SEQUENCES = [
       {
         label: "Duplicate the exponent frame",
         form: forest([
-          round(
-            square(square(...makeUnits(4))),
-            square(...makeUnits(1)),
-          ),
-          round(
-            square(square(...makeUnits(4))),
-            square(...makeUnits(1)),
-          ),
+          round(square(square(...makeUnits(4))), square(...makeUnits(1))),
+          round(square(square(...makeUnits(4))), square(...makeUnits(1))),
         ]),
         expected: [
           expectedRoundContainer([
@@ -301,18 +281,10 @@ export const ENFOLDING_SEQUENCES = [
           round(square(...makeUnits(4))),
         ]),
         expected: [
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
         ],
       },
       {
@@ -351,9 +323,7 @@ export const ENFOLDING_SEQUENCES = [
             expectedSquareContainer([
               expectedSquareContainer(expectedUnits(4)),
             ]),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
         ],
       },
@@ -366,15 +336,11 @@ export const ENFOLDING_SEQUENCES = [
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
         ],
       },
@@ -385,12 +351,8 @@ export const ENFOLDING_SEQUENCES = [
           round(square(...makeUnits(2))),
         ]),
         expected: [
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(2)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(2)),
-          ]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(2))]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(2))]),
         ],
       },
       {
@@ -667,11 +629,15 @@ export const getEnfoldingSequenceNames = () =>
 export const getEnfoldingSequenceByName = (name: string) =>
   ENFOLDING_SEQUENCES.find((sequence) => sequence.name === name);
 
-export const buildEnfoldingSteps = (sequenceName: string): {
+export const buildEnfoldingSteps = (
+  sequenceName: string,
+): {
   forms: FormNode[];
   labels: string[];
 } => {
-  const sequence = ENFOLDING_SEQUENCES.find((item) => item.name === sequenceName);
+  const sequence = ENFOLDING_SEQUENCES.find(
+    (item) => item.name === sequenceName,
+  );
   if (!sequence) {
     throw new Error(`Unknown enfolding sequence: ${sequenceName}`);
   }
