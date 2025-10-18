@@ -25,7 +25,7 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
     "tailwindcss-animate": "^1.0.7",
-    "tree-term-rewriting": "git@github.com:RobinKa/tree-term-rewriting.git"
+    "tree-term-rewriting": "https://github.com/weavermarquez/tree-term-rewriting.git"
   },
   "devDependencies": {
     "@types/react": "^19",

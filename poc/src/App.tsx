@@ -13,7 +13,9 @@ export function App() {
     () => ["demo", ...getEnfoldingSequenceNames()],
     [],
   );
-  const [selectedSequence, setSelectedSequence] = useState(sequenceNames[0]);
+  const [selectedSequence, setSelectedSequence] = useState<string>(
+    sequenceNames[0] ?? "demo",
+  );
   const [stepIndex, setStepIndex] = useState(0);
 
   const { forms, labels } = useMemo(() => {
