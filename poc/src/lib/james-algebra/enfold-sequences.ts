@@ -40,9 +40,7 @@ const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
     const children = current.children ?? [];
     const next = children[index];
     if (!next) {
-      throw new Error(
-        `Path ${path.join("/")} is invalid for node ${current.label}`,
-      );
+      throw new Error(`Path ${path.join("/")} is invalid for node ${current.label}`);
     }
     current = next;
   }
@@ -52,9 +50,7 @@ const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
 const getForestAtPath = (form: FormNode, path: number[]): FormNode => {
   const node = getNodeAtPath(form, path);
   if (node.label !== "forest") {
-    throw new Error(
-      `Expected forest at path ${path.join("/")}, received ${node.label}`,
-    );
+    throw new Error(`Expected forest at path ${path.join("/")}, received ${node.label}`);
   }
   return node;
 };
@@ -119,7 +115,9 @@ export const ENFOLDING_SEQUENCES = [
     steps: [
       {
         label: "Pack factors into one frame",
-        form: forest([round(square(...makeUnits(4)), square(...makeUnits(2)))]),
+        form: forest([
+          round(square(...makeUnits(4)), square(...makeUnits(2))),
+        ]),
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(4)),
@@ -151,8 +149,12 @@ export const ENFOLDING_SEQUENCES = [
           round(square(...makeUnits(4))),
         ]),
         expected: [
-          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
-          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
         ],
       },
       {
@@ -176,7 +178,9 @@ export const ENFOLDING_SEQUENCES = [
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(4)),
-            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
           ]),
         ],
       },
@@ -189,11 +193,15 @@ export const ENFOLDING_SEQUENCES = [
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
           ]),
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
           ]),
         ],
       },
@@ -213,35 +221,52 @@ export const ENFOLDING_SEQUENCES = [
       {
         label: "Bind the base to its exponent",
         form: forest([
-          round(square(square(...makeUnits(4))), square(...makeUnits(2))),
+          round(
+            round(
+              square(square(...makeUnits(4))),
+              square(...makeUnits(2)),
+            ),
+          ),
         ]),
         expected: [
           expectedRoundContainer([
-            expectedSquareContainer([
-              expectedSquareContainer(expectedUnits(4)),
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer(expectedUnits(4)),
+              ]),
+              expectedSquareContainer(expectedUnits(2)),
             ]),
-            expectedSquareContainer(expectedUnits(2)),
           ]),
         ],
       },
       {
         label: "Duplicate the exponent frame",
         form: forest([
-          round(square(square(...makeUnits(4))), square(...makeUnits(1))),
-          round(square(square(...makeUnits(4))), square(...makeUnits(1))),
+          round(
+            round(
+              square(square(...makeUnits(4))),
+              square(...makeUnits(1)),
+            ),
+            round(
+              square(square(...makeUnits(4))),
+              square(...makeUnits(1)),
+            ),
+          ),
         ]),
         expected: [
           expectedRoundContainer([
-            expectedSquareContainer([
-              expectedSquareContainer(expectedUnits(4)),
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer(expectedUnits(4)),
+              ]),
+              expectedSquareContainer(expectedUnits(1)),
             ]),
-            expectedSquareContainer(expectedUnits(1)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer([
-              expectedSquareContainer(expectedUnits(4)),
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer(expectedUnits(4)),
+              ]),
+              expectedSquareContainer(expectedUnits(1)),
             ]),
-            expectedSquareContainer(expectedUnits(1)),
           ]),
         ],
       },
@@ -281,10 +306,18 @@ export const ENFOLDING_SEQUENCES = [
           round(square(...makeUnits(4))),
         ]),
         expected: [
-          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
-          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
-          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
-          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
         ],
       },
       {
@@ -314,16 +347,22 @@ export const ENFOLDING_SEQUENCES = [
         label: "Present the reciprocal exponent frame",
         form: forest([
           round(
-            square(square(...makeUnits(4))),
-            angle(square(...makeUnits(2))),
+            round(
+              square(square(...makeUnits(4))),
+              angle(square(...makeUnits(2))),
+            ),
           ),
         ]),
         expected: [
           expectedRoundContainer([
-            expectedSquareContainer([
-              expectedSquareContainer(expectedUnits(4)),
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer(expectedUnits(4)),
+              ]),
+              expectedAngleContainer([
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
             ]),
-            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
         ],
       },
@@ -336,11 +375,15 @@ export const ENFOLDING_SEQUENCES = [
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
           ]),
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
           ]),
         ],
       },
@@ -351,14 +394,197 @@ export const ENFOLDING_SEQUENCES = [
           round(square(...makeUnits(2))),
         ]),
         expected: [
-          expectedRoundContainer([expectedSquareContainer(expectedUnits(2))]),
-          expectedRoundContainer([expectedSquareContainer(expectedUnits(2))]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+          ]),
         ],
       },
       {
         label: "Reveal the pair of units",
         form: forest([...makeUnits(2)]),
         expected: [...expectedUnits(2)],
+      },
+    ],
+  },
+  {
+    name: "axiom_arithmetic_existence",
+    title: "Arithmetic Axiom :: Existence",
+    conventional: "() != void",
+    showLegend: true,
+    steps: [
+      {
+        label: "Begin with void",
+        form: forest([]),
+        expected: [],
+      },
+      {
+        label: "Introduce the unit ()",
+        form: forest([round()]),
+        expected: [expectedUnit()],
+      },
+    ],
+  },
+  {
+    name: "axiom_arithmetic_unit_accumulation",
+    title: "Arithmetic Axiom :: Unit accumulation",
+    conventional: "() () != ()",
+    showLegend: true,
+    steps: [
+      {
+        label: "Two distinct units",
+        form: forest([round(), round()]),
+        expected: [expectedUnit(), expectedUnit()],
+      },
+      {
+        label: "Contrast with a single unit",
+        form: forest([round()]),
+        expected: [expectedUnit()],
+      },
+    ],
+  },
+  {
+    name: "axiom_arithmetic_void_inversion",
+    title: "Arithmetic Axiom :: Void inversion",
+    conventional: "([]) = [()] = void",
+    showLegend: true,
+    steps: [
+      {
+        label: "Round enfolding an empty square",
+        form: forest([round(square())]),
+        expected: [
+          expectedRoundContainer([expectedSquareContainer([])]),
+        ],
+      },
+      {
+        label: "Square enfolding the unit",
+        form: forest([square(round())]),
+        expected: [
+          expectedSquareContainer([expectedRoundContainer([])]),
+        ],
+      },
+      {
+        label: "Clarify to void",
+        form: forest([]),
+        expected: [],
+      },
+    ],
+  },
+  {
+    name: "axiom_arithmetic_unit_reflection",
+    title: "Arithmetic Axiom :: Unit reflection",
+    conventional: "<()> () = void",
+    showLegend: true,
+    steps: [
+      {
+        label: "Pair unit with its angle counterpart",
+        form: forest([angle(round()), round()]),
+        expected: [
+          expectedAngleContainer([expectedRoundContainer([])]),
+          expectedUnit(),
+        ],
+      },
+      {
+        label: "Cancel to void",
+        form: forest([]),
+        expected: [],
+      },
+    ],
+  },
+  {
+    name: "axiom_algebra_inversion",
+    title: "Algebraic Axiom :: Inversion",
+    conventional: "([A]) = [(A)] = A",
+    showLegend: true,
+    steps: [
+      {
+        label: "Round enfolding square A",
+        form: forest([round(square(varRef("$A")))]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer([{ variable: "$A" }]),
+          ]),
+        ],
+      },
+      {
+        label: "Square enfolding round A",
+        form: forest([square(round(varRef("$A")))]),
+        expected: [
+          expectedSquareContainer([
+            expectedRoundContainer([{ variable: "$A" }]),
+          ]),
+        ],
+      },
+      {
+        label: "Clarify to A",
+        form: forest([varRef("$A")]),
+        expected: [{ variable: "$A" }],
+      },
+    ],
+  },
+  {
+    name: "axiom_algebra_arrangement",
+    title: "Algebraic Axiom :: Arrangement",
+    conventional: "(A [B C]) = (A [B])(A [C])",
+    showLegend: true,
+    steps: [
+      {
+        label: "Single frame with shared square",
+        form: forest([
+          round(
+            varRef("$A"),
+            square(varRef("$B"), varRef("$C")),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            { variable: "$A" },
+            expectedSquareContainer([
+              { variable: "$B" },
+              { variable: "$C" },
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Distribute the square",
+        form: forest([
+          round(varRef("$A"), square(varRef("$B"))),
+          round(varRef("$A"), square(varRef("$C"))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            { variable: "$A" },
+            expectedSquareContainer([{ variable: "$B" }]),
+          ]),
+          expectedRoundContainer([
+            { variable: "$A" },
+            expectedSquareContainer([{ variable: "$C" }]),
+          ]),
+        ],
+      },
+    ],
+  },
+  {
+    name: "axiom_algebra_reflection",
+    title: "Algebraic Axiom :: Reflection",
+    conventional: "A <A> = void",
+    showLegend: true,
+    steps: [
+      {
+        label: "Introduce a form and its mirror",
+        form: forest([varRef("$A"), angle(varRef("$A"))]),
+        expected: [
+          { variable: "$A" },
+          expectedAngleContainer([{ variable: "$A" }]),
+        ],
+      },
+      {
+        label: "Cancel to void",
+        form: forest([]),
+        expected: [],
       },
     ],
   },
@@ -568,6 +794,13 @@ export const ENFOLDING_COMMAND_BUILDERS: Record<
   arithmetic_division_4_divided_by_2: [],
   arithmetic_exponent_4_squared: [],
   arithmetic_root_square_root_of_4: [],
+  axiom_arithmetic_existence: [],
+  axiom_arithmetic_unit_accumulation: [],
+  axiom_arithmetic_void_inversion: [],
+  axiom_arithmetic_unit_reflection: [],
+  axiom_algebra_inversion: [],
+  axiom_algebra_arrangement: [],
+  axiom_algebra_reflection: [],
   void: [
     (form) => {
       getForestAtPath(form, []);
@@ -629,15 +862,11 @@ export const getEnfoldingSequenceNames = () =>
 export const getEnfoldingSequenceByName = (name: string) =>
   ENFOLDING_SEQUENCES.find((sequence) => sequence.name === name);
 
-export const buildEnfoldingSteps = (
-  sequenceName: string,
-): {
+export const buildEnfoldingSteps = (sequenceName: string): {
   forms: FormNode[];
   labels: string[];
 } => {
-  const sequence = ENFOLDING_SEQUENCES.find(
-    (item) => item.name === sequenceName,
-  );
+  const sequence = ENFOLDING_SEQUENCES.find((item) => item.name === sequenceName);
   if (!sequence) {
     throw new Error(`Unknown enfolding sequence: ${sequenceName}`);
   }
