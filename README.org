@@ -673,6 +673,143 @@ Priority feature:
 - I need a *legend*
   - Explain how each container maps to multiple interpretations of arithmetic values in the most obvious way.
 
+*** Demo Sequences (Fig. 11-4)
+These walkthroughs script the arithmetic examples we’ll feature in the demo. Each step pairs the James form with a plain-language cue and the matching conventional algebra expression.
+
+**** Addition :: 4 + 2 → 6
+1. Separate the two piles so the audience sees each addend.
+   #+begin_example
+   oooo oo
+   #+end_example
+2. Merge all marks into one container to show the total.
+   #+begin_example
+   oooooo
+   #+end_example
+Conventional anchor: `4 + 2 = 6`
+Narration cue: “Addition is just putting everything into one collection.”
+
+**** Subtraction :: 4 − 2 → 2
+1. Start with the minuend and show the subtrahend as an inverted pair beside it.
+   #+begin_example
+   oooo <oo>
+   #+end_example
+2. Cancel the inverted pair to reveal what remains.
+   #+begin_example
+   oo
+   #+end_example
+Conventional anchor: `4 − 2 = 2`
+Narration cue: “Subtraction cancels what you mark in contrast.”
+
+**** Multiplication :: 4 × 2 → 8
+1. Present the product as a square container of a four-mark frame repeated twice.
+   #+begin_example
+   ([oooo][oo])
+   #+end_example
+2. Split the square’s contents so each factor copies the four-mark frame.
+   #+begin_example
+   ([oooo][o]) ([oooo][o])
+   #+end_example
+3. Clarify the interior squares to leave paired round frames.
+   #+begin_example
+   ([oooo]) ([oooo])
+   #+end_example
+4. Unroll each frame into a flat line of marks.
+   #+begin_example
+   oooo oooo
+   #+end_example
+Conventional anchor: `4 × 2 = 8`
+Narration cue: “Multiplication is repeated arrangement of the same frame.”
+
+**** Division :: 4 ÷ 2 → 2
+1. Frame the dividend with an inverted divisor to show division as sharing.
+   #+begin_example
+   ([oooo]<[oo]>)
+   #+end_example
+2. Clarify to two identical sharing frames.
+   #+begin_example
+   ([oo]<[oo]>) ([oo]<[oo]>)
+   #+end_example
+3. Resolve each frame to a single unit form.
+   #+begin_example
+   () ()
+   #+end_example
+Conventional anchor: `4 ÷ 2 = 2`
+Narration cue: “Division is giving each recipient the same clarified share.”
+
+**** Exponentiation :: 4 ^ 2 → 16
+1. Show the power as a base frame with its exponent nested inside.
+   #+begin_example
+   (([[oooo]][oo]))
+   #+end_example
+2. Duplicate the exponent frame to expose two identical copies of the base.
+   #+begin_example
+   (([[oooo]][o]) ([[oooo]][o]))
+   #+end_example
+3. Expand each exponent copy into four framed factors.
+   #+begin_example
+   ([oooo] [o]) ([oooo] [o]) ([oooo] [o]) ([oooo] [o])
+   #+end_example
+4. Clarify the square brackets to isolate the base frames.
+   #+begin_example
+   ([oooo]) ([oooo]) ([oooo]) ([oooo])
+   #+end_example
+5. Unroll the frames into four groups of four marks.
+   #+begin_example
+   oooo oooo oooo oooo
+   #+end_example
+Conventional anchor: `4^2 = 16`
+Narration cue: “Exponentiation is multiplying the base by itself as many times as the exponent indicates.”
+
+**** Square Root :: √4 → 2
+1. Present the reciprocal exponent frame for the square root.
+   #+begin_example
+   (([[oooo]]<[oo]>))
+   #+end_example
+2. Decompose the four into paired square frames under the reciprocal.
+   #+begin_example
+   (([[oo][oo]]<[oo]>))
+   #+end_example
+3. Focus on the shared structure within the reciprocal frame.
+   #+begin_example
+   (([([[oo]][oo])]<[oo]>))
+   #+end_example
+4. Cancel the reciprocal, leaving a base frame with paired units.
+   #+begin_example
+   (([[oo]][oo]))
+   #+end_example
+5. Clarify the interior to a single framed pair of marks.
+   #+begin_example
+   (([[oo]]))
+   #+end_example
+6. Enfold to expose the two remaining marks.
+   #+begin_example
+   oo
+   #+end_example
+Conventional anchor: `√4 = 2`
+Narration cue: “Roots unwind exponent frames until only the shared factor remains.”
+
+*** Demo Script Outline (3 minutes)
+**** Hook & Stakes (0:30)
+- Open with the crisis in visual proof and the statistic that a third of adults struggle with fractions.
+- Establish James Algebra as “math that looks like what it means,” quoting the book’s critique of symbolic overload.
+- Invite the audience to treat the demo as a visual proof experiment.
+
+**** Legend & Reading Lesson (0:45)
+- Point at the legend: round = unit, square = grouping/multiplication context, angle = inversion/cancellation.
+- Walk through the addition sequence’s first frame to show how containers encode relationships, not symbols.
+- Emphasize that void space is meaningful—anything outside a boundary is “not inside” that thought.
+
+**** Arithmetic Walkthrough (1:15)
+- Addition: show the merge from two piles to one (`4 + 2` cue).
+- Subtraction: highlight the inverted pair cancelling to leave `2`.
+- Multiplication and Division: contrast the repeated frame with the shared split.
+- Exponent and Root: describe how exponent frames iterate and how the root unwinds the same frame.
+- Throughout, keep the conventional algebra anchor visible under each step so the audience can ground what they see.
+
+**** Close & Next Steps (0:30)
+- Recap: “You just watched arithmetic happen as geometry.”
+- Invite feedback on which dialect is most intuitive for them and pitch the roadmap toward interactive sandboxes.
+- End on the humane math quote: reclaim math as a human activity, then thank and hand off to questions.
 
 
 
