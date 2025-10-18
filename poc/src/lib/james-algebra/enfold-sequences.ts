@@ -271,6 +271,48 @@ export const ENFOLDING_SEQUENCES = [
         ],
       },
       {
+        label: "Remove the unit share from each exponent frame",
+        form: forest([
+          round(
+            round(square(square(...makeUnits(4)))),
+            round(square(square(...makeUnits(4)))),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer(expectedUnits(4)),
+              ]),
+            ]),
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer(expectedUnits(4)),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Flatten to two copies of the base",
+        form: forest([
+          round(
+            square(square(...makeUnits(4))),
+            square(square(...makeUnits(4))),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer([
+              expectedSquareContainer(expectedUnits(4)),
+            ]),
+            expectedSquareContainer([
+              expectedSquareContainer(expectedUnits(4)),
+            ]),
+          ]),
+        ],
+      },
+      {
         label: "Arrange four copies of the base",
         form: forest([
           round(square(...makeUnits(4)), square(...makeUnits(1))),
@@ -500,27 +542,27 @@ export const ENFOLDING_SEQUENCES = [
     showLegend: true,
     steps: [
       {
-        label: "Round enfolding square A",
-        form: forest([round(square(varRef("$A")))]),
+        label: "Round enfolding square alpha",
+        form: forest([round(square(atom("alpha")))]),
         expected: [
           expectedRoundContainer([
-            expectedSquareContainer([{ variable: "$A" }]),
+            expectedSquareContainer(["alpha"]),
           ]),
         ],
       },
       {
-        label: "Square enfolding round A",
-        form: forest([square(round(varRef("$A")))]),
+        label: "Square enfolding round alpha",
+        form: forest([square(round(atom("alpha")))]),
         expected: [
           expectedSquareContainer([
-            expectedRoundContainer([{ variable: "$A" }]),
+            expectedRoundContainer(["alpha"]),
           ]),
         ],
       },
       {
-        label: "Clarify to A",
-        form: forest([varRef("$A")]),
-        expected: [{ variable: "$A" }],
+        label: "Clarify to alpha",
+        form: forest([atom("alpha")]),
+        expected: ["alpha"],
       },
     ],
   },
@@ -534,34 +576,31 @@ export const ENFOLDING_SEQUENCES = [
         label: "Single frame with shared square",
         form: forest([
           round(
-            varRef("$A"),
-            square(varRef("$B"), varRef("$C")),
+            atom("alpha"),
+            square(atom("beta"), atom("gamma")),
           ),
         ]),
         expected: [
           expectedRoundContainer([
-            { variable: "$A" },
-            expectedSquareContainer([
-              { variable: "$B" },
-              { variable: "$C" },
-            ]),
+            "alpha",
+            expectedSquareContainer(["beta", "gamma"]),
           ]),
         ],
       },
       {
         label: "Distribute the square",
         form: forest([
-          round(varRef("$A"), square(varRef("$B"))),
-          round(varRef("$A"), square(varRef("$C"))),
+          round(atom("alpha"), square(atom("beta"))),
+          round(atom("alpha"), square(atom("gamma"))),
         ]),
         expected: [
           expectedRoundContainer([
-            { variable: "$A" },
-            expectedSquareContainer([{ variable: "$B" }]),
+            "alpha",
+            expectedSquareContainer(["beta"]),
           ]),
           expectedRoundContainer([
-            { variable: "$A" },
-            expectedSquareContainer([{ variable: "$C" }]),
+            "alpha",
+            expectedSquareContainer(["gamma"]),
           ]),
         ],
       },
@@ -574,11 +613,11 @@ export const ENFOLDING_SEQUENCES = [
     showLegend: true,
     steps: [
       {
-        label: "Introduce a form and its mirror",
-        form: forest([varRef("$A"), angle(varRef("$A"))]),
+        label: "Introduce alpha and its mirror",
+        form: forest([atom("alpha"), angle(atom("alpha"))]),
         expected: [
-          { variable: "$A" },
-          expectedAngleContainer([{ variable: "$A" }]),
+          "alpha",
+          expectedAngleContainer(["alpha"]),
         ],
       },
       {
