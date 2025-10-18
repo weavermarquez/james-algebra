@@ -5,11 +5,8 @@ import { NODE_BASE_SIZE, DIAMOND_SIZE } from "./layout";
 
 const { circle, polygon, point, segment, PlanarSet } = Flatten;
 
-export type NetworkPlanarSet = {
-  planarSet: typeof PlanarSet.prototype;
-};
-
-const createCircle = (x: number, y: number, radius: number) => circle(point(x, y), radius);
+const createCircle = (x: number, y: number, radius: number) =>
+  circle(point(x, y), radius);
 
 const createSquare = (x: number, y: number, side: number) => {
   const half = side / 2;
@@ -33,6 +30,9 @@ const createDiamond = (x: number, y: number, side: number) => {
 
 const addNodeShape = (set: typeof PlanarSet.prototype, node: NetworkNode) => {
   switch (node.type) {
+    case "root":
+      set.add(createCircle(node.x, node.y, NODE_BASE_SIZE * 1.2));
+      break;
     case "round":
       set.add(createCircle(node.x, node.y, NODE_BASE_SIZE));
       break;

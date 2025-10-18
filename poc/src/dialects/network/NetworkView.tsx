@@ -3,19 +3,49 @@ import { useMemo } from "react";
 import type { FormNode } from "@/lib/james-algebra";
 
 import { buildNetworkGraph } from "./layout";
-import { buildPlanarSet } from "./geometry";
 import type { NetworkGraph, NetworkNode } from "./types";
 
 const NODE_STROKE = "#333";
+const NODE_FILL_ROOT = "#E0E7FF";
 const NODE_FILL_ROUND = "#FFE2B3";
 const NODE_FILL_SQUARE = "#CDE6FF";
 const NODE_FILL_DIAMOND = "#EED5F5";
 const NODE_FILL_ATOM = "#F5F5F5";
 const EDGE_STROKE = "#555";
 const EDGE_WIDTH = 1.5;
+const EDGE_OPACITY = 0.6;
+
+const greekMap: Record<string, string> = {
+  alpha: "α",
+  beta: "β",
+  gamma: "γ",
+  delta: "δ",
+  epsilon: "ε",
+  zeta: "ζ",
+  eta: "η",
+  theta: "θ",
+  iota: "ι",
+  kappa: "κ",
+  lambda: "λ",
+  mu: "μ",
+  nu: "ν",
+  xi: "ξ",
+  omicron: "ο",
+  pi: "π",
+  rho: "ρ",
+  sigma: "σ",
+  tau: "τ",
+  upsilon: "υ",
+  phi: "φ",
+  chi: "χ",
+  psi: "ψ",
+  omega: "ω",
+};
 
 const getNodeFill = (node: NetworkNode): string => {
   switch (node.type) {
+    case "root":
+      return NODE_FILL_ROOT;
     case "round":
       return NODE_FILL_ROUND;
     case "square":
@@ -26,6 +56,17 @@ const getNodeFill = (node: NetworkNode): string => {
     default:
       return NODE_FILL_ATOM;
   }
+};
+
+const formatNodeLabel = (node: NetworkNode): string | undefined => {
+  if (node.type === "atom" && node.label.startsWith("atom:")) {
+    const raw = node.label.split(":")[1] ?? "";
+    return greekMap[raw.toLowerCase()] ?? raw.charAt(0).toUpperCase() + raw.slice(1);
+  }
+  if (node.type === "root") {
+    return "root";
+  }
+  return undefined;
 };
 
 const expandBounds = (graph: NetworkGraph, padding = 4) => {
@@ -51,13 +92,12 @@ export interface NetworkViewProps {
 }
 
 export function NetworkView({ form, className }: NetworkViewProps) {
-  const { graph, planarSet } = useMemo(() => {
-    const network = buildNetworkGraph(form);
-    const planar = buildPlanarSet(network);
-    return { graph: network, planarSet: planar };
-  }, [form]);
-
+  const graph = useMemo(() => buildNetworkGraph(form), [form]);
   const bounds = expandBounds(graph);
+  const nodeMap = useMemo(
+    () => new Map(graph.nodes.map((node) => [node.id, node] as const)),
+    [graph],
+  );
 
   return (
     <div className={className}>
@@ -68,8 +108,8 @@ export function NetworkView({ form, className }: NetworkViewProps) {
         style={{ maxHeight: "100vh" }}
       >
         {graph.edges.map((edge) => {
-          const from = graph.nodes.find((n) => n.id === edge.from);
-          const to = graph.nodes.find((n) => n.id === edge.to);
+          const from = nodeMap.get(edge.from);
+          const to = nodeMap.get(edge.to);
           if (!from || !to) return null;
           return (
             <line
@@ -81,13 +121,39 @@ export function NetworkView({ form, className }: NetworkViewProps) {
               stroke={EDGE_STROKE}
               strokeWidth={EDGE_WIDTH}
               strokeLinecap="round"
+              strokeOpacity={EDGE_OPACITY}
             />
           );
         })}
 
         {graph.nodes.map((node) => {
           const fill = getNodeFill(node);
+          const label = formatNodeLabel(node);
           switch (node.type) {
+            case "root":
+              return (
+                <g key={node.id}>
+                  <circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={1.2}
+                    stroke={NODE_STROKE}
+                    strokeWidth={0.12}
+                    fill={fill}
+                  />
+                  <text
+                    x={node.x}
+                    y={node.y}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize={0.85}
+                    fill={NODE_STROKE}
+                    fontFamily="Noto Serif Display, serif"
+                  >
+                    root
+                  </text>
+                </g>
+              );
             case "round":
               return (
                 <circle
@@ -128,15 +194,29 @@ export function NetworkView({ form, className }: NetworkViewProps) {
             case "atom":
             default:
               return (
-                <circle
-                  key={node.id}
-                  cx={node.x}
-                  cy={node.y}
-                  r={0.5}
-                  stroke={NODE_STROKE}
-                  strokeWidth={0.1}
-                  fill={fill}
-                />
+                <g key={node.id}>
+                  <circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={0.5}
+                    stroke={NODE_STROKE}
+                    strokeWidth={0.08}
+                    fill={fill}
+                  />
+                  {label ? (
+                    <text
+                      x={node.x}
+                      y={node.y + 0.02}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize={0.7}
+                      fill={NODE_STROKE}
+                      fontFamily="Noto Serif Display, serif"
+                    >
+                      {label}
+                    </text>
+                  ) : null}
+                </g>
               );
           }
         })}

@@ -1,6 +1,6 @@
 import type { FormNode, FormId } from "@/lib/james-algebra";
 
-export type NetworkNodeType = "round" | "square" | "angle" | "atom";
+export type NetworkNodeType = "root" | "round" | "square" | "angle" | "atom";
 
 export type NetworkNode = {
   id: FormId;
