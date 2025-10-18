@@ -1,4 +1,5 @@
 import {
+  angle,
   atom,
   forest,
   round,
@@ -9,6 +10,29 @@ import {
 } from "@/lib/james-algebra";
 import { enfoldSelection } from "@/lib/james-algebra";
 import type { EnfoldSelection } from "@/lib/james-algebra";
+
+const makeUnits = (count: number): FormNode[] =>
+  Array.from({ length: count }, () => round());
+
+const expectedUnit = () => ({ boundary: "round", children: [] as unknown[] });
+
+const expectedUnits = (count: number) =>
+  Array.from({ length: count }, expectedUnit);
+
+const expectedRoundContainer = (children: unknown[]) => ({
+  boundary: "round",
+  children,
+});
+
+const expectedSquareContainer = (children: unknown[]) => ({
+  boundary: "square",
+  children,
+});
+
+const expectedAngleContainer = (children: unknown[]) => ({
+  boundary: "angle",
+  children,
+});
 
 const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
   let current = form;
@@ -44,6 +68,338 @@ const getChildIdsAtPath = (form: FormNode, path: number[]): string[] => {
 };
 
 export const ENFOLDING_SEQUENCES = [
+  {
+    name: "arithmetic_addition_4_plus_2",
+    title: "Addition :: 4 + 2 -> 6",
+    conventional: "4 + 2 = 6",
+    showLegend: true,
+    steps: [
+      {
+        label: "Keep 4 and 2 in separate piles",
+        form: forest([square(...makeUnits(4)), ...makeUnits(2)]),
+        expected: [
+          expectedSquareContainer(expectedUnits(4)),
+          ...expectedUnits(2),
+        ],
+      },
+      {
+        label: "Collect everything into one container",
+        form: forest([square(...makeUnits(6))]),
+        expected: [expectedSquareContainer(expectedUnits(6))],
+      },
+    ],
+  },
+  {
+    name: "arithmetic_subtraction_4_minus_2",
+    title: "Subtraction :: 4 - 2 -> 2",
+    conventional: "4 - 2 = 2",
+    showLegend: true,
+    steps: [
+      {
+        label: "Show the minuend and the inverted pair",
+        form: forest([...makeUnits(4), angle(...makeUnits(2))]),
+        expected: [
+          ...expectedUnits(4),
+          expectedAngleContainer(expectedUnits(2)),
+        ],
+      },
+      {
+        label: "Cancel the inverted pair",
+        form: forest([...makeUnits(2)]),
+        expected: [...expectedUnits(2)],
+      },
+    ],
+  },
+  {
+    name: "arithmetic_multiplication_4_times_2",
+    title: "Multiplication :: 4 x 2 -> 8",
+    conventional: "4 x 2 = 8",
+    showLegend: true,
+    steps: [
+      {
+        label: "Pack factors into one frame",
+        form: forest([
+          round(square(...makeUnits(4)), square(...makeUnits(2))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+            expectedSquareContainer(expectedUnits(2)),
+          ]),
+        ],
+      },
+      {
+        label: "Duplicate the square context",
+        form: forest([
+          round(square(...makeUnits(4)), square(...makeUnits(1))),
+          round(square(...makeUnits(4)), square(...makeUnits(1))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+            expectedSquareContainer(expectedUnits(1)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+            expectedSquareContainer(expectedUnits(1)),
+          ]),
+        ],
+      },
+      {
+        label: "Clarify the inner square",
+        form: forest([
+          round(square(...makeUnits(4))),
+          round(square(...makeUnits(4))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+        ],
+      },
+      {
+        label: "Unroll into two sets of four",
+        form: forest([...makeUnits(4), ...makeUnits(4)]),
+        expected: [...expectedUnits(4), ...expectedUnits(4)],
+      },
+    ],
+  },
+  {
+    name: "arithmetic_division_4_divided_by_2",
+    title: "Division :: 4 / 2 -> 2",
+    conventional: "4 / 2 = 2",
+    showLegend: true,
+    steps: [
+      {
+        label: "Frame the dividend with the divisor",
+        form: forest([
+          round(square(...makeUnits(4)), angle(square(...makeUnits(2)))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Split the share into two frames",
+        form: forest([
+          round(square(...makeUnits(2)), angle(square(...makeUnits(2)))),
+          round(square(...makeUnits(2)), angle(square(...makeUnits(2)))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Clarify the quotient",
+        form: forest([round(), round()]),
+        expected: [expectedUnit(), expectedUnit()],
+      },
+    ],
+  },
+  {
+    name: "arithmetic_exponent_4_squared",
+    title: "Exponentiation :: 4^2 -> 16",
+    conventional: "4^2 = 16",
+    showLegend: true,
+    steps: [
+      {
+        label: "Bind the base to its exponent",
+        form: forest([
+          round(
+            square(square(...makeUnits(4))),
+            square(...makeUnits(2)),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer([
+              expectedSquareContainer(expectedUnits(4)),
+            ]),
+            expectedSquareContainer(expectedUnits(2)),
+          ]),
+        ],
+      },
+      {
+        label: "Duplicate the exponent frame",
+        form: forest([
+          round(
+            square(square(...makeUnits(4))),
+            square(...makeUnits(1)),
+          ),
+          round(
+            square(square(...makeUnits(4))),
+            square(...makeUnits(1)),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer([
+              expectedSquareContainer(expectedUnits(4)),
+            ]),
+            expectedSquareContainer(expectedUnits(1)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer([
+              expectedSquareContainer(expectedUnits(4)),
+            ]),
+            expectedSquareContainer(expectedUnits(1)),
+          ]),
+        ],
+      },
+      {
+        label: "Arrange four copies of the base",
+        form: forest([
+          round(square(...makeUnits(4)), square(...makeUnits(1))),
+          round(square(...makeUnits(4)), square(...makeUnits(1))),
+          round(square(...makeUnits(4)), square(...makeUnits(1))),
+          round(square(...makeUnits(4)), square(...makeUnits(1))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+            expectedSquareContainer(expectedUnits(1)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+            expectedSquareContainer(expectedUnits(1)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+            expectedSquareContainer(expectedUnits(1)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+            expectedSquareContainer(expectedUnits(1)),
+          ]),
+        ],
+      },
+      {
+        label: "Clarify each base frame",
+        form: forest([
+          round(square(...makeUnits(4))),
+          round(square(...makeUnits(4))),
+          round(square(...makeUnits(4))),
+          round(square(...makeUnits(4))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(4)),
+          ]),
+        ],
+      },
+      {
+        label: "Unroll sixteen units",
+        form: forest([
+          ...makeUnits(4),
+          ...makeUnits(4),
+          ...makeUnits(4),
+          ...makeUnits(4),
+        ]),
+        expected: [
+          ...expectedUnits(4),
+          ...expectedUnits(4),
+          ...expectedUnits(4),
+          ...expectedUnits(4),
+        ],
+      },
+    ],
+  },
+  {
+    name: "arithmetic_root_square_root_of_4",
+    title: "Square Root :: sqrt(4) -> 2",
+    conventional: "sqrt(4) = 2",
+    showLegend: true,
+    steps: [
+      {
+        label: "Present the reciprocal exponent frame",
+        form: forest([
+          round(
+            square(square(...makeUnits(4))),
+            angle(square(...makeUnits(2))),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer([
+              expectedSquareContainer(expectedUnits(4)),
+            ]),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Split the reciprocal across factors",
+        form: forest([
+          round(square(...makeUnits(2)), angle(square(...makeUnits(2)))),
+          round(square(...makeUnits(2)), angle(square(...makeUnits(2)))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Clarify each shared base",
+        form: forest([
+          round(square(...makeUnits(2))),
+          round(square(...makeUnits(2))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+          ]),
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+          ]),
+        ],
+      },
+      {
+        label: "Reveal the pair of units",
+        form: forest([...makeUnits(2)]),
+        expected: [...expectedUnits(2)],
+      },
+    ],
+  },
   {
     name: "void",
     steps: [
@@ -244,6 +600,12 @@ export const ENFOLDING_COMMAND_BUILDERS: Record<
   (typeof ENFOLDING_SEQUENCES)[number]["name"],
   ((form: FormNode) => EnfoldSelection)[]
 > = {
+  arithmetic_addition_4_plus_2: [],
+  arithmetic_subtraction_4_minus_2: [],
+  arithmetic_multiplication_4_times_2: [],
+  arithmetic_division_4_divided_by_2: [],
+  arithmetic_exponent_4_squared: [],
+  arithmetic_root_square_root_of_4: [],
   void: [
     (form) => {
       getForestAtPath(form, []);
@@ -302,6 +664,9 @@ export const ENFOLDING_COMMAND_BUILDERS: Record<
 export const getEnfoldingSequenceNames = () =>
   ENFOLDING_SEQUENCES.map((sequence) => sequence.name);
 
+export const getEnfoldingSequenceByName = (name: string) =>
+  ENFOLDING_SEQUENCES.find((sequence) => sequence.name === name);
+
 export const buildEnfoldingSteps = (sequenceName: string): {
   forms: FormNode[];
   labels: string[];
@@ -311,6 +676,13 @@ export const buildEnfoldingSteps = (sequenceName: string): {
     throw new Error(`Unknown enfolding sequence: ${sequenceName}`);
   }
   const builders = ENFOLDING_COMMAND_BUILDERS[sequence.name] ?? [];
+
+  if (!builders.length || builders.length !== sequence.steps.length - 1) {
+    return {
+      forms: sequence.steps.map((step) => cloneForm(step.form)),
+      labels: sequence.steps.map((step) => step.label),
+    };
+  }
 
   const forms: FormNode[] = [cloneForm(sequence.steps[0].form)];
   const labels: string[] = [sequence.steps[0].label];
