@@ -488,7 +488,6 @@ collect the two frames ([[oo]] [o])s under the shared context [[oo]]:
 clarify
 (( [[oo]] [oo] <[oo]> ))
 
-
 cancel
 (( [[oo]] ))
 
