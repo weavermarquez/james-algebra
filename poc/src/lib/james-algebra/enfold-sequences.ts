@@ -34,13 +34,23 @@ const expectedAngleContainer = (children: unknown[]) => ({
   children,
 });
 
+const squareOfUnits = (count: number): FormNode => square(...makeUnits(count));
+
+const doubleSquareOfUnits = (count: number): FormNode =>
+  square(square(...makeUnits(count)));
+
+const expectedDoubleSquareOfUnits = (count: number) =>
+  expectedSquareContainer([expectedSquareContainer(expectedUnits(count))]);
+
 const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
   let current = form;
   for (const index of path) {
     const children = current.children ?? [];
     const next = children[index];
     if (!next) {
-      throw new Error(`Path ${path.join("/")} is invalid for node ${current.label}`);
+      throw new Error(
+        `Path ${path.join("/")} is invalid for node ${current.label}`,
+      );
     }
     current = next;
   }
@@ -50,7 +60,9 @@ const getNodeAtPath = (form: FormNode, path: number[]): FormNode => {
 const getForestAtPath = (form: FormNode, path: number[]): FormNode => {
   const node = getNodeAtPath(form, path);
   if (node.label !== "forest") {
-    throw new Error(`Expected forest at path ${path.join("/")}, received ${node.label}`);
+    throw new Error(
+      `Expected forest at path ${path.join("/")}, received ${node.label}`,
+    );
   }
   return node;
 };
@@ -115,9 +127,7 @@ export const ENFOLDING_SEQUENCES = [
     steps: [
       {
         label: "Pack factors into one frame",
-        form: forest([
-          round(square(...makeUnits(4)), square(...makeUnits(2))),
-        ]),
+        form: forest([round(square(...makeUnits(4)), square(...makeUnits(2)))]),
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(4)),
@@ -149,12 +159,8 @@ export const ENFOLDING_SEQUENCES = [
           round(square(...makeUnits(4))),
         ]),
         expected: [
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
         ],
       },
       {
@@ -178,9 +184,7 @@ export const ENFOLDING_SEQUENCES = [
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(4)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
         ],
       },
@@ -193,15 +197,11 @@ export const ENFOLDING_SEQUENCES = [
         expected: [
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
           expectedRoundContainer([
             expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
           ]),
         ],
       },
@@ -209,6 +209,142 @@ export const ENFOLDING_SEQUENCES = [
         label: "Clarify the quotient",
         form: forest([round(), round()]),
         expected: [expectedUnit(), expectedUnit()],
+      },
+    ],
+  },
+  {
+    name: "arithmetic_fraction_2_over_4",
+    title: "Simplify Fraction :: 2/4 -> 1/2",
+    conventional: "2/4 = 1/2",
+    showLegend: true,
+    steps: [
+      {
+        label: "Transcribe 2/4 into frames",
+        form: forest([round(squareOfUnits(2), angle(squareOfUnits(4)))]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(4))]),
+          ]),
+        ],
+      },
+      {
+        label: "Mark each 'oo' as its own frame",
+        form: forest([
+          round(
+            squareOfUnits(2),
+            angle(square(round(squareOfUnits(2)), round(squareOfUnits(2)))),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([
+              expectedSquareContainer([
+                expectedRoundContainer([
+                  expectedSquareContainer(expectedUnits(2)),
+                ]),
+                expectedRoundContainer([
+                  expectedSquareContainer(expectedUnits(2)),
+                ]),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Expose the shared [o] context",
+        form: forest([
+          round(
+            squareOfUnits(2),
+            angle(
+              square(
+                round(squareOfUnits(2), squareOfUnits(1)),
+                round(squareOfUnits(2), squareOfUnits(1)),
+              ),
+            ),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([
+              expectedSquareContainer([
+                expectedRoundContainer([
+                  expectedSquareContainer(expectedUnits(2)),
+                  expectedSquareContainer(expectedUnits(1)),
+                ]),
+                expectedRoundContainer([
+                  expectedSquareContainer(expectedUnits(2)),
+                  expectedSquareContainer(expectedUnits(1)),
+                ]),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Collect the ([oo] [o]) frames under [oo]",
+        form: forest([
+          round(
+            squareOfUnits(2),
+            angle(square(round(squareOfUnits(2), squareOfUnits(2)))),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([
+              expectedSquareContainer([
+                expectedRoundContainer([
+                  expectedSquareContainer(expectedUnits(2)),
+                  expectedSquareContainer(expectedUnits(2)),
+                ]),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Clarify the denominator blocks",
+        form: forest([
+          round(squareOfUnits(2), angle(squareOfUnits(2), squareOfUnits(2))),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([
+              expectedSquareContainer(expectedUnits(2)),
+              expectedSquareContainer(expectedUnits(2)),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Split the angle frames",
+        form: forest([
+          round(
+            squareOfUnits(2),
+            angle(squareOfUnits(2)),
+            angle(squareOfUnits(2)),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedSquareContainer(expectedUnits(2)),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
+          ]),
+        ],
+      },
+      {
+        label: "Cancel the anti-pair",
+        form: round(angle(squareOfUnits(2))),
+        expected: [
+          expectedRoundContainer([
+            expectedAngleContainer([expectedSquareContainer(expectedUnits(2))]),
+          ]),
+        ],
       },
     ],
   },
@@ -222,10 +358,7 @@ export const ENFOLDING_SEQUENCES = [
         label: "Bind the base to its exponent",
         form: forest([
           round(
-            round(
-              square(square(...makeUnits(4))),
-              square(...makeUnits(2)),
-            ),
+            round(square(square(...makeUnits(4))), square(...makeUnits(2))),
           ),
         ]),
         expected: [
@@ -243,14 +376,8 @@ export const ENFOLDING_SEQUENCES = [
         label: "Duplicate the exponent frame",
         form: forest([
           round(
-            round(
-              square(square(...makeUnits(4))),
-              square(...makeUnits(1)),
-            ),
-            round(
-              square(square(...makeUnits(4))),
-              square(...makeUnits(1)),
-            ),
+            round(square(square(...makeUnits(4))), square(...makeUnits(1))),
+            round(square(square(...makeUnits(4))), square(...makeUnits(1))),
           ),
         ]),
         expected: [
@@ -295,20 +422,11 @@ export const ENFOLDING_SEQUENCES = [
       },
       {
         label: "Flatten to two copies of the base",
-        form: forest([
-          round(
-            square(square(...makeUnits(4))),
-            square(square(...makeUnits(4))),
-          ),
-        ]),
+        form: forest([round(square(...makeUnits(4)), square(...makeUnits(4)))]),
         expected: [
           expectedRoundContainer([
-            expectedSquareContainer([
-              expectedSquareContainer(expectedUnits(4)),
-            ]),
-            expectedSquareContainer([
-              expectedSquareContainer(expectedUnits(4)),
-            ]),
+            expectedSquareContainer(expectedUnits(4)),
+            expectedSquareContainer(expectedUnits(4)),
           ]),
         ],
       },
@@ -348,18 +466,10 @@ export const ENFOLDING_SEQUENCES = [
           round(square(...makeUnits(4))),
         ]),
         expected: [
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(4)),
-          ]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
+          expectedRoundContainer([expectedSquareContainer(expectedUnits(4))]),
         ],
       },
       {
@@ -386,14 +496,9 @@ export const ENFOLDING_SEQUENCES = [
     showLegend: true,
     steps: [
       {
-        label: "Present the reciprocal exponent frame",
+        label: "Transcribe sqrt(4) as 4^(1/2)",
         form: forest([
-          round(
-            round(
-              square(square(...makeUnits(4))),
-              angle(square(...makeUnits(2))),
-            ),
-          ),
+          round(round(square(squareOfUnits(4)), angle(squareOfUnits(2)))),
         ]),
         expected: [
           expectedRoundContainer([
@@ -409,43 +514,244 @@ export const ENFOLDING_SEQUENCES = [
         ],
       },
       {
-        label: "Split the reciprocal across factors",
+        label: "Mark each 'oo' as its own frame",
         form: forest([
-          round(square(...makeUnits(2)), angle(square(...makeUnits(2)))),
-          round(square(...makeUnits(2)), angle(square(...makeUnits(2)))),
+          round(
+            round(
+              square(square(round(squareOfUnits(2)), round(squareOfUnits(2)))),
+              angle(squareOfUnits(2)),
+            ),
+          ),
         ]),
         expected: [
           expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
-            ]),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(2)),
-            expectedAngleContainer([
-              expectedSquareContainer(expectedUnits(2)),
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer([
+                  expectedRoundContainer([
+                    expectedSquareContainer(expectedUnits(2)),
+                  ]),
+                  expectedRoundContainer([
+                    expectedSquareContainer(expectedUnits(2)),
+                  ]),
+                ]),
+              ]),
+              expectedAngleContainer([
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
             ]),
           ]),
         ],
       },
       {
-        label: "Clarify each shared base",
+        label: "Expose each [o] inside the denominator",
         form: forest([
-          round(square(...makeUnits(2))),
-          round(square(...makeUnits(2))),
+          round(
+            round(
+              square(
+                square(
+                  round(squareOfUnits(2), squareOfUnits(1)),
+                  round(squareOfUnits(2), squareOfUnits(1)),
+                ),
+              ),
+              angle(squareOfUnits(2)),
+            ),
+          ),
         ]),
         expected: [
           expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(2)),
-          ]),
-          expectedRoundContainer([
-            expectedSquareContainer(expectedUnits(2)),
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer([
+                  expectedRoundContainer([
+                    expectedSquareContainer(expectedUnits(2)),
+                    expectedSquareContainer(expectedUnits(1)),
+                  ]),
+                  expectedRoundContainer([
+                    expectedSquareContainer(expectedUnits(2)),
+                    expectedSquareContainer(expectedUnits(1)),
+                  ]),
+                ]),
+              ]),
+              expectedAngleContainer([
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
+            ]),
           ]),
         ],
       },
       {
-        label: "Reveal the pair of units",
+        label: "Collect ([oo] [o]) pairs under [oo]",
+        form: forest([
+          round(
+            round(
+              square(square(round(squareOfUnits(2), squareOfUnits(2)))),
+              angle(squareOfUnits(2)),
+            ),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer([
+                  expectedRoundContainer([
+                    expectedSquareContainer(expectedUnits(2)),
+                    expectedSquareContainer(expectedUnits(2)),
+                  ]),
+                ]),
+              ]),
+              expectedAngleContainer([
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Clarify each denominator block",
+        form: forest([
+          round(
+            round(
+              square(squareOfUnits(2), squareOfUnits(2)),
+              angle(squareOfUnits(2)),
+            ),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedSquareContainer(expectedUnits(2)),
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
+              expectedAngleContainer([
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Mark each '[oo]' as [[oo]]",
+        form: forest([
+          round(
+            round(
+              square(
+                round(doubleSquareOfUnits(2)),
+                round(doubleSquareOfUnits(2)),
+              ),
+              angle(squareOfUnits(2)),
+            ),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedRoundContainer([expectedDoubleSquareOfUnits(2)]),
+                expectedRoundContainer([expectedDoubleSquareOfUnits(2)]),
+              ]),
+              expectedAngleContainer([
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Expose the shared [o] inside each [[oo]]",
+        form: forest([
+          round(
+            round(
+              square(
+                round(doubleSquareOfUnits(2), squareOfUnits(1)),
+                round(doubleSquareOfUnits(2), squareOfUnits(1)),
+              ),
+              angle(squareOfUnits(2)),
+            ),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedRoundContainer([
+                  expectedDoubleSquareOfUnits(2),
+                  expectedSquareContainer(expectedUnits(1)),
+                ]),
+                expectedRoundContainer([
+                  expectedDoubleSquareOfUnits(2),
+                  expectedSquareContainer(expectedUnits(1)),
+                ]),
+              ]),
+              expectedAngleContainer([
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Collect ([[oo]] [o]) under [[oo]]",
+        form: forest([
+          round(
+            round(
+              square(round(doubleSquareOfUnits(2), squareOfUnits(2))),
+              angle(squareOfUnits(2)),
+            ),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedRoundContainer([
+              expectedSquareContainer([
+                expectedRoundContainer([
+                  expectedDoubleSquareOfUnits(2),
+                  expectedSquareContainer(expectedUnits(2)),
+                ]),
+              ]),
+              expectedAngleContainer([
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Clarify the base and reciprocal frames",
+        form: forest([
+          round(
+            round(
+              doubleSquareOfUnits(2),
+              squareOfUnits(2),
+              angle(squareOfUnits(2)),
+            ),
+          ),
+        ]),
+        expected: [
+          expectedRoundContainer([
+            expectedRoundContainer([
+              expectedDoubleSquareOfUnits(2),
+              expectedSquareContainer(expectedUnits(2)),
+              expectedAngleContainer([
+                expectedSquareContainer(expectedUnits(2)),
+              ]),
+            ]),
+          ]),
+        ],
+      },
+      {
+        label: "Cancel the reciprocal pair",
+        form: forest([round(round(doubleSquareOfUnits(2)))]),
+        expected: [
+          expectedRoundContainer([
+            expectedRoundContainer([expectedDoubleSquareOfUnits(2)]),
+          ]),
+        ],
+      },
+      {
+        label: "Clarify the remaining units",
         form: forest([...makeUnits(2)]),
         expected: [...expectedUnits(2)],
       },
@@ -496,16 +802,12 @@ export const ENFOLDING_SEQUENCES = [
       {
         label: "Round enfolding an empty square",
         form: forest([round(square())]),
-        expected: [
-          expectedRoundContainer([expectedSquareContainer([])]),
-        ],
+        expected: [expectedRoundContainer([expectedSquareContainer([])])],
       },
       {
         label: "Square enfolding the unit",
         form: forest([square(round())]),
-        expected: [
-          expectedSquareContainer([expectedRoundContainer([])]),
-        ],
+        expected: [expectedSquareContainer([expectedRoundContainer([])])],
       },
       {
         label: "Clarify to void",
@@ -545,18 +847,14 @@ export const ENFOLDING_SEQUENCES = [
         label: "Round enfolding square alpha",
         form: forest([round(square(atom("alpha")))]),
         expected: [
-          expectedRoundContainer([
-            expectedSquareContainer(["alpha"]),
-          ]),
+          expectedRoundContainer([expectedSquareContainer(["alpha"])]),
         ],
       },
       {
         label: "Square enfolding round alpha",
         form: forest([square(round(atom("alpha")))]),
         expected: [
-          expectedSquareContainer([
-            expectedRoundContainer(["alpha"]),
-          ]),
+          expectedSquareContainer([expectedRoundContainer(["alpha"])]),
         ],
       },
       {
@@ -575,10 +873,7 @@ export const ENFOLDING_SEQUENCES = [
       {
         label: "Single frame with shared square",
         form: forest([
-          round(
-            atom("alpha"),
-            square(atom("beta"), atom("gamma")),
-          ),
+          round(atom("alpha"), square(atom("beta"), atom("gamma"))),
         ]),
         expected: [
           expectedRoundContainer([
@@ -594,14 +889,8 @@ export const ENFOLDING_SEQUENCES = [
           round(atom("alpha"), square(atom("gamma"))),
         ]),
         expected: [
-          expectedRoundContainer([
-            "alpha",
-            expectedSquareContainer(["beta"]),
-          ]),
-          expectedRoundContainer([
-            "alpha",
-            expectedSquareContainer(["gamma"]),
-          ]),
+          expectedRoundContainer(["alpha", expectedSquareContainer(["beta"])]),
+          expectedRoundContainer(["alpha", expectedSquareContainer(["gamma"])]),
         ],
       },
     ],
@@ -615,10 +904,7 @@ export const ENFOLDING_SEQUENCES = [
       {
         label: "Introduce alpha and its mirror",
         form: forest([atom("alpha"), angle(atom("alpha"))]),
-        expected: [
-          "alpha",
-          expectedAngleContainer(["alpha"]),
-        ],
+        expected: ["alpha", expectedAngleContainer(["alpha"])],
       },
       {
         label: "Cancel to void",
@@ -901,11 +1187,15 @@ export const getEnfoldingSequenceNames = () =>
 export const getEnfoldingSequenceByName = (name: string) =>
   ENFOLDING_SEQUENCES.find((sequence) => sequence.name === name);
 
-export const buildEnfoldingSteps = (sequenceName: string): {
+export const buildEnfoldingSteps = (
+  sequenceName: string,
+): {
   forms: FormNode[];
   labels: string[];
 } => {
-  const sequence = ENFOLDING_SEQUENCES.find((item) => item.name === sequenceName);
+  const sequence = ENFOLDING_SEQUENCES.find(
+    (item) => item.name === sequenceName,
+  );
   if (!sequence) {
     throw new Error(`Unknown enfolding sequence: ${sequenceName}`);
   }

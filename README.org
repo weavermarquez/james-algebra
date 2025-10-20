@@ -427,389 +427,74 @@ I'm just familiar with it, is all.
 **** Supabase
 ** 4. API Sketch
 * Current Gameplan
+This demo has been a /hit/! But right now we gotta fix a couple of the demo examples.
 
-current situation
-We do not have enough time for new features -- it is only two hours until demo time and so what we're gonna do is instead take examples from the iconic arithmetic book and lay them out like we have the enfolding sequences and then step through that as a learning / teaching experience for our audience who will have no clue what James algebra is or how it corresponds to Conventional algebra.
+** New Example: 2/4
 
-so our goal here today is to Add hard-coded sequences and display additional information on the sandbox page that will help clarify what is going on in a given situation or given configuration of the James algebra form
+#+begin_example
+2/4 ::
+transcribe
+([oo] <[oo oo]>)
 
-Several features that we need
-- Include a legend which explains how each container maps to enter multiple interpretations of arithmetic values
-  - But we want to focus on the most obvious interpretation
-- We also need to display the conventional algebraic interpretation of the form quite prominently and in a way that is I guess sort of Spatially mapped to the James algebra, but we're not gonna do anything fancy
-  - We're just gonna literally have it hard-coded on the demo page as a way to show how each general form Maps to a algebraic interpretation
+mark:
+([oo] <[ ([oo]) ([oo]) ]>)
+([oo] <[ ([oo] [o]) ([oo] [o]) ]>)
 
-I need to persuade people that whatever they are seeing is legitimately an algebraic expression.
+collect the two frames ([oo] [o])s under the shared context [oo]
+([oo] <[ ([oo] [oo]) ]>)
 
-** I also need to begin preparing a presentation script.
-The demo is only three minutes, so it will have to be very quick, and we will separate it in halves.
+clarify
+([oo] <[oo] [oo]>)
 
-*** First, sort of an introduction into the concept of James algebra and how to read it. 
+split because <> is not /really/ a boundary
+([oo] <[oo]> <[oo]>)
 
-  
-its purpose and how it fits into the world of existing algebra and mathematics. Also, a mention of the current problem, which is that one-third of American adults do not understand fractions and this is not only due to political or economic constraints, but also due to the crisis in confidence of visual proof from the last 200 years.
-
-
-**** Quotes from the book I think are relevant
-
-#+begin_quote
-The great success of the entirely symbolic approach, fol¬
-lowed closely by the rise of the use of streams of ones
-and zeros in digital computers, has led to the expression
-of mathematics almost exclusively in symbolic string
-languages. Unfortunately, in the rush to make math
-8symbolic, the early twentieth century founders seem to
-have forgotten that people care about understanding and
-using math, not about an esoteric collection of structural
-rules that cast common arithmetic into conformity with
-a maze of symbolic concepts delineated by group theory
-built on top of set theory built on top of predicate logic.
-...despite the obvious importance of visual images
-in human cognitive activities, visual representation
-remains a second-class citizen in both the theory
-and practice of mathematics.9
-
------
-
-
-A premiere example of a physically dysfunctional sym¬
-bolic concept is the associative law of addition.
-(a + b) + c = a + (b + c)
-The parentheses used to assert this law create visual
-interference that undermines the meaning of addition,
-that of putting together. Putting things together two-
-at-a-time is not a property of addition. The associative
-law specifies a method to achieve addition, one that is
-not particularly efficient. The sequential two-at-a-time
-strategy might be because there are two sides to a tex¬
-tual plus sign; it might be because addition tables are
-constructed in planar space to add only two numbers at
-a time; it might be because relations are usually binary;
-it might be because group theory incorporates right- and
-left-side rules; or it might be a hangover from counting
-by adding one at a time. But here’s what we can learn
-from children. To add many things, put them together. It
-doesn’t matter how.
-
------
-
-
-Symbolic math is a big part ol the problem ol math educa¬
-tion; another big part is our cultural belie! that all people
-should learn the details ol an esoteric discipline at the cost
-of their own sell-confidence. We may find that symbolic
-abstraction is a weakness as well as a strength. When it
-comes to problem solving, we might find that symbolic
-arithmetic is an antiquated tool. We might find that iconic
-arithmetic provides greater elegance, simplicity, ground¬
-edness, and hopefully ease of learning.
-
------
-
-Our senses and our bodies are the interface between
-manifest and conceptual. Distinction is the ground of
-perception. When there is no distinction between inside
-and outside, we do not perceive a difference. The interface
-between our physical and our cognitive selves is a bound¬
-ary that transacts only differences. The physicality of our
-body defines an obvious container of our self. Boundary
-math carries th is physicality, via iconic representation,
-directly into the core of mathematical thinking.
-
------
-
-
- It is time to reclaim mathematics as a human activity, to tame the creature we have unleashed. Humane math aligns with how our minds are known to work, with how the patterns of communication between people work, and with how physical existence embodies our knowledge. Boundary math is both humane and rigorous, the two objectives are not incompatible. The result is a much sim¬ pler iconic arithmetic that reflects how numbers evolved in human cognition prior to our recent truly exotic exper¬ iment with purely symbolic mathematical form. 
-#+end_quote
-
-*** And secondly, going through basic equations and practicing the evaluation of it.
-
-
-This will require both the introduction and clarification of James' algebra as opposed to unit-ensemble arithmetic, which is the way that humans have historically performed math. Instead, I need to compare this to the algebraic equation manipulations, the structure manipulations that we are performing. Unlike the abacus, which assists with calculation of how many, James' algebra and its representations assist with the calculation and transformation of patterns in how to represent or what is the meaning.
-
-Actually, no, it might be best to just jump into it straight in.
-
-And we definitely need to prioritize including the sequence examples.
-
-**** A bunch of examples.
-
-
-***** Sequences
-
-fig 11-4 p. 278
-#+begin_quote
-4 + 2 :: oooo oo
- 6 :: oooooo
-
-
-
-4 - 2 :: oooo <oo>
-2 :: oo
-
-
-4 * 2 ::
-([oooo][oo])
-([oooo][o]) ([oooo][o])
-([oooo]) ([oooo])
-oooo oooo
+cancel anti-pairs
+(<[oo]>)
 ::
-8
- 
+1/2
+#+end_example
 
-4 / 2 ::
-([oooo]<[oo]>)
-([oo]<[oo]>) ([oo]<[oo]>)
-( ) ( ) ::
-2
- 
+** Fix: 4^2
+I manually fixed it - one of the steps "Flatten to two copies of the base" had duplicate square containers.
+** Fix: sqrt(2)
+Needs a total overhaul. Scrap the existing example, then incorporate this:
 
-4 ^ 2 ::
-(([[oooo]][oo]))
-(([[oooo]][o]) ([[oooo]][o]))
-([oooo] [o]) ([oooo] [o]) ([oooo] [o]) ([oooo] [o])
-([oooo] ) ([oooo] ) ([oooo] ) ([oooo] )
-oooo oooo oooo oooo
-:: 16
 
-sqrt(4) = 4^(1/2) ::
+#+begin_example
+sqrt(4) -> 4^(1/2)
 
-(( [[ oo oo ]] <[oo]>))
-(( [[ ([oo][o]) ([oo] [o]) ]] <[oo]>))
+transcribe:
+(([[ oo oo ]] <[oo]> ))
 
-(( [[ ([oo][oo]) ]] <[oo]>))
+mark each 'oo':
+(([[ ([oo]) ([oo]) ]] <[oo]> ))
+(([[ ([oo][o]) ([oo][o]) ]] <[oo]> ))
 
-(( [[oo][oo]] <[oo]>))
 
-(([([[oo]][oo])]<[oo]>))
+collect the two frames ([oo] [o])s under the shared context [oo]
+(([ [([oo][oo])] ] <[oo]> ))
 
-(( [[oo]] [oo] <[oo]>))
+clarify:
+(([ [oo] [oo] ] <[oo]> ))
 
+mark each '[oo]'
+(([ ([[oo]] ) ([[oo]]) ] <[oo]> ))
+(([ ([[oo]] [o]) ([[oo]] [o]) ] <[oo]> ))
+
+collect the two frames ([[oo]] [o])s under the shared context [[oo]]:
+(([ ([[oo]] [oo]) ] <[oo]> ))
+
+clarify
+(( [[oo]] [oo] <[oo]> ))
+
+
+cancel
 (( [[oo]] ))
 
+clarify
 oo 
+
 :: 2
-#+end_quote
-
-
-
-***** Some expressions
-#+begin_quote
-fig. 11-1 263
-expression :: james form
-
-In this, we use numerals as shorthand. 
-
-- 0 :: 
-- 3 :: ooo
-- -3 :: <3>
-- 1/3 :: (<[3]>)
-- 3/4 :: ([3][4])
-
-
-- 2 3/4 :: 2 ([3]<[4]>)
-- 3^2 * 5 :: ([5] ([[3]][2]))
-
-explicit base 2
-- 1101 :: ([2 o][2][2]) o
-implicit base 2
-- 1101 :: (((o) o)) o
-
-irrational
-- sqrt(3) :: (([[3]]<[2]>))
-- e, transcendental base-e :: (o)
-
-  
-imaginary and non-numeric forms
-- J, the James imaginary log(-1) :: [<o>]
-- i, imaginary sqrt(1) :: (([J]<[2]>))
-
-- pi, transendental :: ([J]([J]<[2]>))
-
-- negative infinity :: []
-- positive infinity :: <[]>
-#+end_quote
-
-
-***** More Expressions
-#+begin_quote
-expression :: james form
-Inverse
-- A :: A
-- -A ::: <A>
-- 1 / A :: (<[A]>)
-
-Arithmetic
-- A + B :: A B
-- A - B :: A <B>
-- A * B :: ([A][B])
-- A / B :: ([A]<[B]>)
-
-Base
-- B^A :: (([[B]])[A])
-- B^(-A) :: (([[B]])[<A>])
-- B ^ (1/A) :: (([[B]]<[A]>))
-- log_b (A) :: (<[[B]]>[[A]])
-
-Embedded Base
-- # :: (o)
-- #^A :: (A)
-- log_# (A) :: [A]
-
-#+end_quote
-
-
-
-
-This might be a lot, actually. I think I can maybe include some screenshots of unit ensemble arithmetic, but I'm not sure.
-
-
-** Other Draft Thoughts
-
-I do feel like it is a little ironic for Void to be explicitly represented with the root node, so I'm wondering if that should maybe be represented by something more reminiscent of a blank canvas? I think maybe going with the qiupu motif.
-
-Demo Priorities 
-Priority feature:
-- Display the conventional algebraic interpretation of the form prominently.
-- I need a *legend*
-  - Explain how each container maps to multiple interpretations of arithmetic values in the most obvious way.
-
-*** Demo Sequences (Fig. 11-4)
-These walkthroughs script the arithmetic examples we’ll feature in the demo. Each step pairs the James form with a plain-language cue and the matching conventional algebra expression.
-
-**** Addition :: 4 + 2 → 6
-1. Separate the two piles so the audience sees each addend.
-   #+begin_example
-   oooo oo
-   #+end_example
-2. Merge all marks into one container to show the total.
-   #+begin_example
-   oooooo
-   #+end_example
-Conventional anchor: `4 + 2 = 6`
-Narration cue: “Addition is just putting everything into one collection.”
-
-**** Subtraction :: 4 − 2 → 2
-1. Start with the minuend and show the subtrahend as an inverted pair beside it.
-   #+begin_example
-   oooo <oo>
-   #+end_example
-2. Cancel the inverted pair to reveal what remains.
-   #+begin_example
-   oo
-   #+end_example
-Conventional anchor: `4 − 2 = 2`
-Narration cue: “Subtraction cancels what you mark in contrast.”
-
-**** Multiplication :: 4 × 2 → 8
-1. Present the product as a square container of a four-mark frame repeated twice.
-   #+begin_example
-   ([oooo][oo])
-   #+end_example
-2. Split the square’s contents so each factor copies the four-mark frame.
-   #+begin_example
-   ([oooo][o]) ([oooo][o])
-   #+end_example
-3. Clarify the interior squares to leave paired round frames.
-   #+begin_example
-   ([oooo]) ([oooo])
-   #+end_example
-4. Unroll each frame into a flat line of marks.
-   #+begin_example
-   oooo oooo
-   #+end_example
-Conventional anchor: `4 × 2 = 8`
-Narration cue: “Multiplication is repeated arrangement of the same frame.”
-
-**** Division :: 4 ÷ 2 → 2
-1. Frame the dividend with an inverted divisor to show division as sharing.
-   #+begin_example
-   ([oooo]<[oo]>)
-   #+end_example
-2. Clarify to two identical sharing frames.
-   #+begin_example
-   ([oo]<[oo]>) ([oo]<[oo]>)
-   #+end_example
-3. Resolve each frame to a single unit form.
-   #+begin_example
-   () ()
-   #+end_example
-Conventional anchor: `4 ÷ 2 = 2`
-Narration cue: “Division is giving each recipient the same clarified share.”
-
-**** Exponentiation :: 4 ^ 2 → 16
-1. Show the power as a base frame with its exponent nested inside.
-   #+begin_example
-   (([[oooo]][oo]))
-   #+end_example
-2. Duplicate the exponent frame to expose two identical copies of the base.
-   #+begin_example
-   (([[oooo]][o]) ([[oooo]][o]))
-   #+end_example
-3. Expand each exponent copy into four framed factors.
-   #+begin_example
-   ([oooo] [o]) ([oooo] [o]) ([oooo] [o]) ([oooo] [o])
-   #+end_example
-4. Clarify the square brackets to isolate the base frames.
-   #+begin_example
-   ([oooo]) ([oooo]) ([oooo]) ([oooo])
-   #+end_example
-5. Unroll the frames into four groups of four marks.
-   #+begin_example
-   oooo oooo oooo oooo
-   #+end_example
-Conventional anchor: `4^2 = 16`
-Narration cue: “Exponentiation is multiplying the base by itself as many times as the exponent indicates.”
-
-**** Square Root :: √4 → 2
-1. Present the reciprocal exponent frame for the square root.
-   #+begin_example
-   (([[oooo]]<[oo]>))
-   #+end_example
-2. Decompose the four into paired square frames under the reciprocal.
-   #+begin_example
-   (([[oo][oo]]<[oo]>))
-   #+end_example
-3. Focus on the shared structure within the reciprocal frame.
-   #+begin_example
-   (([([[oo]][oo])]<[oo]>))
-   #+end_example
-4. Cancel the reciprocal, leaving a base frame with paired units.
-   #+begin_example
-   (([[oo]][oo]))
-   #+end_example
-5. Clarify the interior to a single framed pair of marks.
-   #+begin_example
-   (([[oo]]))
-   #+end_example
-6. Enfold to expose the two remaining marks.
-   #+begin_example
-   oo
-   #+end_example
-Conventional anchor: `√4 = 2`
-Narration cue: “Roots unwind exponent frames until only the shared factor remains.”
-
-*** Demo Script Outline (3 minutes)
-**** Hook & Stakes (0:30)
-- Open with the crisis in visual proof and the statistic that a third of adults struggle with fractions.
-- Establish James Algebra as “math that looks like what it means,” quoting the book’s critique of symbolic overload.
-- Invite the audience to treat the demo as a visual proof experiment.
-
-**** Legend & Reading Lesson (0:45)
-- Point at the legend: round = unit, square = grouping/multiplication context, angle = inversion/cancellation.
-- Walk through the addition sequence’s first frame to show how containers encode relationships, not symbols.
-- Emphasize that void space is meaningful—anything outside a boundary is “not inside” that thought.
-
-**** Arithmetic Walkthrough (1:15)
-- Addition: show the merge from two piles to one (`4 + 2` cue).
-- Subtraction: highlight the inverted pair cancelling to leave `2`.
-- Multiplication and Division: contrast the repeated frame with the shared split.
-- Exponent and Root: describe how exponent frames iterate and how the root unwinds the same frame.
-- Throughout, keep the conventional algebra anchor visible under each step so the audience can ground what they see.
-
-**** Close & Next Steps (0:30)
-- Recap: “You just watched arithmetic happen as geometry.”
-- Invite feedback on which dialect is most intuitive for them and pitch the roadmap toward interactive sandboxes.
-- End on the humane math quote: reclaim math as a human activity, then thank and hand off to questions.
-
-
-
+#+end_example
+* More Fixes
