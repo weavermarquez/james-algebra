@@ -303,12 +303,8 @@ export const ENFOLDING_SEQUENCES = [
         ]),
         expected: [
           expectedRoundContainer([
-            expectedSquareContainer([
-              expectedSquareContainer(expectedUnits(4)),
-            ]),
-            expectedSquareContainer([
-              expectedSquareContainer(expectedUnits(4)),
-            ]),
+            expectedSquareContainer(expectedUnits(4)),
+            expectedSquareContainer(expectedUnits(4)),
           ]),
         ],
       },
