@@ -297,8 +297,8 @@ export const ENFOLDING_SEQUENCES = [
         label: "Flatten to two copies of the base",
         form: forest([
           round(
-            square(square(...makeUnits(4))),
-            square(square(...makeUnits(4))),
+            square(...makeUnits(4))),
+            square(...makeUnits(4)),
           ),
         ]),
         expected: [
